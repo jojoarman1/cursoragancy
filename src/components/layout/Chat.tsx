@@ -19,7 +19,7 @@ const ANSWER_CLASS_NAME =
 const OPTION_CLASS_NAME =
   'invisible cursor-pointer rounded-[10px] border border-black/50 px-[10px] pt-[3px] pb-[1px] text-left leading-[1.3] text-black/50 transition-colors hover:text-black focus-visible:border-black focus-visible:text-black focus-visible:outline-none aria-pressed:bg-[#eaeaeb] aria-pressed:text-black'
 const HINT_CLASS_NAME =
-  'relative -top-[1rem] cursor-pointer align-middle font-mono text-sm font-light text-black/50 uppercase transition-colors hover:text-black focus-visible:text-black focus-visible:outline-none'
+  'relative -top-[1rem] cursor-pointer align-middle font-mono text-sm font-light text-black/50 uppercase transition-colors after:absolute after:-inset-x-[6px] after:-inset-y-[14px] hover:text-black focus-visible:text-black focus-visible:outline-none'
 
 const PARAGRAPH_GAP = <span aria-hidden='true' className='block h-[30px]' />
 
@@ -64,7 +64,7 @@ export const Chat = () => {
         ref={chat.refs.panelRef}
         id={PANEL_ID}
         aria-label='Чат'
-        className='invisible fixed top-[106rem] bottom-6 left-11.5 z-50 w-[min(400px,calc(100vw-92rem))] rounded-[17px] text-black selection:bg-black selection:text-white'
+        className='invisible fixed top-[calc(106rem+var(--chat-viewport-top,0px))] bottom-[calc(24rem+var(--chat-viewport-bottom,0px))] left-11.5 z-50 w-[min(400px,calc(100vw-92rem))] rounded-[17px] text-black selection:bg-black selection:text-white max-[480px]:right-4 max-[480px]:w-auto'
       >
         {/* Same box as the chat button; follows the panel's top-right corner while it expands */}
         <button
@@ -171,6 +171,9 @@ export const Chat = () => {
                           aria-invalid={chatForm.state.isEmailError}
                           contentEditable='plaintext-only'
                           inputMode={currentStep.inputMode}
+                          enterKeyHint={currentStep.isMultiline ? 'enter' : 'next'}
+                          autoCapitalize={currentStep.inputMode === 'email' ? 'off' : 'sentences'}
+                          spellCheck={currentStep.inputMode !== 'email'}
                           tabIndex={0}
                           data-chat-control
                           onKeyDown={chatForm.functions.onInputKeyDown}

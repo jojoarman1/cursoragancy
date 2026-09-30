@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next'
 import { Geist, IBM_Plex_Mono } from 'next/font/google'
 
 import { CursorFollower } from '@/components/layout/CursorFollower'
+import { ZoomLock } from '@/components/layout/ZoomLock'
 import { SITE_CONFIG } from '@/config/site'
 
 import './globals.css'
@@ -48,6 +49,12 @@ export const metadata: Metadata = {
 }
 
 export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  // The on-screen keyboard shrinks the layout, so fixed panels like the chat stay above it
+  interactiveWidget: 'resizes-content',
   themeColor: SITE_CONFIG.themeColor,
   colorScheme: 'dark'
 }
@@ -61,6 +68,7 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
       <body className='min-h-full flex flex-col'>
         {children}
         <CursorFollower />
+        <ZoomLock />
       </body>
     </html>
   )

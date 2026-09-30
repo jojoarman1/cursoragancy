@@ -77,6 +77,11 @@
     overscroll-behavior: none;
   }
 
+  /* No pinch or double-tap zoom */
+  html {
+    touch-action: pan-x pan-y;
+  }
+
   ::selection {
     background-color: white;
     color: black;

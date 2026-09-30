@@ -8,7 +8,7 @@ import {
 import gsap from 'gsap'
 import { CustomEase } from 'gsap/CustomEase'
 import { usePathname } from 'next/navigation'
-import { useRef } from 'react'
+import { useEffect, useRef } from 'react'
 
 import { INTRO_DURATION } from '@/config/animation'
 import { useIsLoadingFinished } from '@/stores/loading'
@@ -203,6 +203,27 @@ export const useChat = ({ onContentShow, onClosed }: UseChatParams) => {
         .set(button, { autoAlpha: 1 })
     )
   })
+
+  // iOS keeps the layout size when its keyboard opens; the panel follows the visible area instead.
+  // A plain effect: reactuse targets don't accept VisualViewport
+  useEffect(() => {
+    const panel = panelRef.current
+    const visualViewport = window.visualViewport
+    if (!panelDisclosure.opened || !panel || !visualViewport) return
+
+    const fitVisualViewport = () => {
+      const hiddenBottom = window.innerHeight - visualViewport.height - visualViewport.offsetTop
+      panel.style.setProperty('--chat-viewport-top', `${visualViewport.offsetTop}px`)
+      panel.style.setProperty('--chat-viewport-bottom', `${Math.max(hiddenBottom, 0)}px`)
+    }
+
+    visualViewport.addEventListener('resize', fitVisualViewport)
+    visualViewport.addEventListener('scroll', fitVisualViewport)
+    return () => {
+      visualViewport.removeEventListener('resize', fitVisualViewport)
+      visualViewport.removeEventListener('scroll', fitVisualViewport)
+    }
+  }, [panelDisclosure.opened])
 
   useEventListener(
     WINDOW_TARGET,

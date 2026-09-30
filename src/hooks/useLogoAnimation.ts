@@ -11,6 +11,8 @@ gsap.registerPlugin(useGSAP)
 
 const VIEWPORT_FILL = 0.45
 const TILT_SETTLED = 0.0005
+// One full turn around the vertical axis while the logo scales in
+const INTRO_SPIN = Math.PI * 2
 
 const WINDOW_TARGET = target(() => window)
 
@@ -34,14 +36,13 @@ export const useLogoAnimation = ({ isVisible, size, onReady }: UseLogoAnimationP
       const appear = appearRef.current
       if (!appear || !isVisible) return
 
-      gsap.to(appear.scale, {
-        x: 1,
-        y: 1,
-        z: 1,
-        duration: reduceMotion ? 0 : INTRO_DURATION,
-        ease: INTRO_EASE,
-        onUpdate: () => invalidate()
-      })
+      gsap
+        .timeline({
+          defaults: { duration: reduceMotion ? 0 : INTRO_DURATION, ease: INTRO_EASE },
+          onUpdate: () => invalidate()
+        })
+        .to(appear.scale, { x: 1, y: 1, z: 1 })
+        .fromTo(appear.rotation, { y: -INTRO_SPIN }, { y: 0 }, 0)
     },
     { dependencies: [isVisible, reduceMotion] }
   )

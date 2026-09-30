@@ -1,5 +1,10 @@
 import { useGSAP } from '@gsap/react'
-import { useBoolean, usePreferredReducedMotion } from '@siberiacancode/reactuse'
+import {
+  useBoolean,
+  useEventListener,
+  useMediaQuery,
+  usePreferredReducedMotion
+} from '@siberiacancode/reactuse'
 import gsap from 'gsap'
 import { type KeyboardEvent, useRef, useState } from 'react'
 
@@ -23,6 +28,9 @@ const CONTROLS_SHIFT = 8
 const CONTROLS_EASE = 'power2.out'
 const THANKS_DURATION = 0.5
 const THANKS_EASE = 'power1.out'
+
+const TOUCH_QUERY = '(pointer: coarse)'
+const INTERACTIVE_SELECTOR = 'a, button, [role="textbox"]'
 
 const TITLE_SELECTOR = '[data-chat-title]'
 const CONTROL_SELECTOR = '[data-chat-control]'
@@ -76,6 +84,7 @@ const focusAtEnd = (element: HTMLElement) => {
 
 export const useChatForm = () => {
   const reduceMotion = usePreferredReducedMotion() === 'reduce'
+  const isTouch = useMediaQuery(TOUCH_QUERY)
   const [answers, setAnswers] = useState<ChatAnswer[]>([])
   const [stepId, setStepId] = useState<string | null>(CHAT_FIRST_STEP_ID)
   const [selected, setSelected] = useState<string[]>([])
@@ -111,6 +120,9 @@ export const useChatForm = () => {
     const input = inputRef.current
     const timeline = gsap.timeline({
       onComplete: () => {
+        // A sudden on-screen keyboard or focus ring would get in the way on touch screens
+        if (isTouch) return
+
         if (input) focusAtEnd(input)
         else formRef.current?.querySelector<HTMLElement>(OPTION_SELECTOR)?.focus()
       }
@@ -200,12 +212,21 @@ export const useChatForm = () => {
 
   const onInputKeyDown = (event: KeyboardEvent<HTMLSpanElement>) => {
     if (event.key !== 'Enter') return
-    // Shift+Enter adds a line in multiline answers
-    if (event.shiftKey && step?.isMultiline) return
+    // Multiline answers take new lines from Shift+Enter, or from Enter on touch keyboards
+    if (step?.isMultiline && (event.shiftKey || isTouch)) return
 
     event.preventDefault()
     submitInput()
   }
+
+  // The empty input is only a few pixels wide; a tap anywhere in the conversation reaches it
+  useEventListener(formRef, 'click', (event: MouseEvent) => {
+    const input = inputRef.current
+    if (!input || !(event.target instanceof Element)) return
+    if (event.target.closest(INTERACTIVE_SELECTOR)) return
+
+    focusAtEnd(input)
+  })
 
   const onInput = () => {
     if (isEmailError) toggleEmailError(false)
