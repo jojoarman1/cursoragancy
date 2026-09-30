@@ -40,6 +40,8 @@ export default function Home() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(JSON_LD).replace(/</g, '\\u003c') }}
       />
       <Hero />
+      {/* Placeholder for the next section: full screen on a white background, empty for now */}
+      <section className='h-dvh bg-white text-black' />
     </main>
   )
 }

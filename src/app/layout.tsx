@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from 'next'
 import { Geist, IBM_Plex_Mono } from 'next/font/google'
 
+import { CursorFollower } from '@/components/layout/CursorFollower'
+import { Header } from '@/components/layout/Header'
 import { SITE_CONFIG } from '@/config/site'
 
 import './globals.css'
@@ -36,12 +38,10 @@ export const metadata: Metadata = {
     title: SITE_CONFIG.title,
     description: SITE_CONFIG.description
   },
+  // Indexing is allowed by default; no index/follow here, so it can't contradict the noindex
+  // Next.js adds to 404 pages
   robots: {
-    index: true,
-    follow: true,
     googleBot: {
-      index: true,
-      follow: true,
       'max-image-preview': 'large',
       'max-snippet': -1,
       'max-video-preview': -1
@@ -60,7 +60,11 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
       lang={SITE_CONFIG.lang}
       className={`${geistSans.variable} ${ibmPlexMono.variable} h-full antialiased`}
     >
-      <body className='min-h-full flex flex-col'>{children}</body>
+      <body className='min-h-full flex flex-col'>
+        <Header />
+        {children}
+        <CursorFollower />
+      </body>
     </html>
   )
 }
