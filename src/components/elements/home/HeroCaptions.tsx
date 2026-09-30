@@ -4,7 +4,6 @@ import clsx from 'clsx'
 
 import { type UseHeroCaptionsParams, useHeroCaptions } from '@/hooks/useHeroCaptions'
 
-// Square dots at 0, 9 and 18px inside a 21px-wide row, like the snp.agency chat button
 const CHAT_DOT_POSITIONS = ['left-0', 'left-[9px]', 'right-0']
 
 type HeroCaptionsProps = UseHeroCaptionsParams
@@ -14,8 +13,7 @@ export const HeroCaptions = (props: HeroCaptionsProps) => {
 
   return (
     <div ref={heroCaptions.refs.containerRef} className='font-mono text-sm'>
-      {/* Fixed to the bottom of the screen, fades in after the intro. Fixed px (not artboard rem):
-          the tap target keeps its size */}
+      {/* px, not artboard rem: the tap target must not shrink on small screens */}
       <button
         data-hero-fade
         type='button'
@@ -34,8 +32,7 @@ export const HeroCaptions = (props: HeroCaptionsProps) => {
           ))}
         </span>
       </button>
-      {/* Clips its text, which slides up from below after the intro; shares the button height
-          so their centers line up */}
+      {/* Button height, so their centers line up */}
       <p className='absolute right-11.5 bottom-6 flex h-[35px] items-center overflow-hidden uppercase max-[480px]:h-[28px]'>
         <span data-hero-caption className='invisible block'>
           2026

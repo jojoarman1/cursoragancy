@@ -10,9 +10,7 @@ import type { LogoDockProgress } from '@/hooks/useLogoDockScroll'
 
 gsap.registerPlugin(useGSAP)
 
-// Share of the smaller viewport side the logo takes up
 const VIEWPORT_FILL = 0.45
-// The scene renders on demand: the tilt keeps requesting frames until it's this close to its target
 const TILT_SETTLED = 0.0005
 
 const WINDOW_TARGET = target(() => window)
@@ -20,7 +18,6 @@ const WINDOW_TARGET = target(() => window)
 export interface UseLogoAnimationParams {
   isVisible: boolean
   size: number
-  // Scroll dock progress: the tilt fades out while the logo flies into the header
   dockProgressRef: RefObject<LogoDockProgress>
   onReady: () => void
 }
@@ -56,18 +53,22 @@ export const useLogoAnimation = ({
     { dependencies: [isVisible, reduceMotion] }
   )
 
-  // A pointer move changes the tilt target, so the scene needs a new frame
   useEventListener(WINDOW_TARGET, 'pointermove', () => invalidate(), { passive: true })
 
   useFrame(({ pointer }, delta) => {
     const mesh = meshRef.current
     if (!mesh) return
 
-    // The first frame compiles the shaders, so the scene is ready after it
+    // The first frame compiles the shaders
     if (!isReadyRef.current) {
       isReadyRef.current = true
       onReady()
     }
+
+    // After a client-side navigation the tween starts before the canvas is ready and its own
+    // invalidate() calls get lost
+    const appear = appearRef.current
+    if (appear && gsap.isTweening(appear.scale)) invalidate()
 
     if (reduceMotion) return
 

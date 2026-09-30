@@ -6,10 +6,7 @@ import { usePathname } from 'next/navigation'
 
 import { CursorIcon } from '@/components/icon/CursorIcon'
 
-// Empty for now apart from the logo. The blend mode keeps the white logo visible
-// on both the dark hero and white sections
 export const Header = () => {
-  // On the home page the logo appears only after the 3D hero logo has docked into it on scroll
   const isHome = usePathname() === '/'
 
   return (

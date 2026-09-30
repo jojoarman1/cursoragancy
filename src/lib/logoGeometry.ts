@@ -1,7 +1,6 @@
 import { type BufferGeometry, ExtrudeGeometry, MathUtils, Shape, Vector2 } from 'three'
 import { mergeVertices } from 'three/addons/utils/BufferGeometryUtils.js'
 
-// Outline of CURSOR_ICON_PATH (24×24), Y axis flipped for three.js
 const LOGO_POINTS = [
   new Vector2(0, 0),
   new Vector2(12, 0),
@@ -11,17 +10,14 @@ const LOGO_POINTS = [
   new Vector2(0, -12)
 ]
 
-// Visual center (centroid) of the outline in SVG coordinates (24×24 box, y down). The arrow's mass
-// sits top-left, so centering by the bounding box (12, 12) makes the logo look off-center
+// Centering by the bounding box (12, 12) looks off: the arrow's mass sits top-left
 export const LOGO_SVG_SIZE = 24
 export const LOGO_CENTROID = { x: 9, y: 9 }
 
-// Rounded glass in the hero → sharp and nearly flat, like the SVG logo, in the header
 const CORNER_RADIUS = { rounded: 1.5, sharp: 0 }
 const BEVEL = { rounded: 1, sharp: 0.05 }
 const DEPTH = 1.5
 
-// Number of prebuilt shapes between rounded and sharp; switching between them is instant
 export const LOGO_SHARPNESS_STEPS = 16
 
 const createRoundedShape = (points: Vector2[], radius: number) => {
@@ -52,7 +48,6 @@ const createSmoothGeometry = (geometry: BufferGeometry) => {
   return smoothGeometry
 }
 
-// sharpness: 0 — rounded corners and a thick rim, 1 — sharp corners and an almost flat edge
 const createLogoGeometry = (sharpness: number) => {
   const radius = MathUtils.lerp(CORNER_RADIUS.rounded, CORNER_RADIUS.sharp, sharpness)
   const bevel = MathUtils.lerp(BEVEL.rounded, BEVEL.sharp, sharpness)
@@ -65,7 +60,6 @@ const createLogoGeometry = (sharpness: number) => {
       bevelThickness: bevel,
       bevelSize: bevel,
       bevelSegments: 16
-      // Origin at the centroid (shape y is flipped) and halfway through the depth
     }).translate(-LOGO_CENTROID.x, LOGO_CENTROID.y, -DEPTH / 2)
   )
 }

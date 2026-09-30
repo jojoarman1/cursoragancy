@@ -11,18 +11,15 @@ const WINDOW_TARGET = target(() => window)
 
 export interface UseLogoDockParams {
   progressRef: RefObject<LogoDockProgress>
-  // World units per logo unit of the mesh
   scale: number
 }
 
-// Moves the logo from the screen center into the header slot as the page scrolls
 export const useLogoDock = ({ progressRef, scale }: UseLogoDockParams) => {
   const dockRef = useRef<Group>(null)
   const slotRef = useRef<Element | null>(null)
   const lastProgressRef = useRef(-1)
   const invalidate = useThree(state => state.invalidate)
 
-  // The scene renders on demand: scrolling moves the logo, so it needs frames
   useEventListener(WINDOW_TARGET, 'scroll', () => invalidate(), { passive: true })
 
   useFrame(({ size, viewport }) => {
@@ -33,7 +30,7 @@ export const useLogoDock = ({ progressRef, scale }: UseLogoDockParams) => {
     const slot = slotRef.current
     const progress = progressRef.current.value
 
-    // The scroll progress may update after this frame was requested: keep rendering until it stops
+    // ScrollTrigger may update the progress after this frame was requested
     if (progress !== lastProgressRef.current) {
       lastProgressRef.current = progress
       invalidate()
@@ -45,17 +42,13 @@ export const useLogoDock = ({ progressRef, scale }: UseLogoDockParams) => {
       return
     }
 
-    // The mesh origin is the logo centroid, so aim at the centroid of the SVG in the slot
     const rect = slot.getBoundingClientRect()
     const centroidX = rect.left + (rect.width * LOGO_CENTROID.x) / LOGO_SVG_SIZE
     const centroidY = rect.top + (rect.height * LOGO_CENTROID.y) / LOGO_SVG_SIZE
 
-    // A straight line from the screen center to the slot (the scroll timing keeps it centered in
-    // the visible part of the hero, see useLogoDockScroll)
     const x = MathUtils.lerp(size.width / 2, centroidX, progress)
     const y = MathUtils.lerp(size.height / 2, centroidY, progress)
 
-    // Screen pixels → world units on the logo plane (z = 0), measured from the screen center
     const unitsPerPixel = viewport.width / size.width
     const targetScale = (rect.width * unitsPerPixel) / (LOGO_SVG_SIZE * scale)
 

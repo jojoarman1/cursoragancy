@@ -1,4 +1,3 @@
-// Single source for SEO data: metadata, JSON-LD, OG image, manifest, sitemap and robots
 export const SITE_CONFIG = {
   // TODO: replace with the real agency name, title and description
   name: 'Cursor Agency',

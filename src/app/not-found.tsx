@@ -1,4 +1,3 @@
-// Layout after revelatio.studio's 404: label on top, message in the middle
 export default function NotFound() {
   return (
     <main className='flex min-h-dvh flex-col items-center justify-center'>
@@ -12,7 +11,7 @@ export default function NotFound() {
             Страница, которую вы ищете, не существует или была перемещена.
           </p>
         </div>
-        {/* Empty bottom slot keeps the message vertically centered, as in the original */}
+        {/* Keeps the message vertically centered */}
         <div />
       </div>
     </main>

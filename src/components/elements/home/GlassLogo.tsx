@@ -1,18 +1,17 @@
 'use client'
 
-import { target, useLockScroll, useMount } from '@siberiacancode/reactuse'
 import dynamic from 'next/dynamic'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 
+import { useLoadingTask } from '@/hooks/useLoadingTask'
 import { useLogoDockScroll } from '@/hooks/useLogoDockScroll'
+import { useIsLoadingFinished } from '@/stores/loading'
 
 import { HeroCaptions } from './HeroCaptions'
 import { Preloader } from './Preloader'
 
-// Finishes the preloader even if the 3D scene never reports ready (e.g. no WebGL)
+// Releases the preloader even if the scene never reports ready (e.g. no WebGL)
 const MAX_LOADING_TIME = 8000
-
-const BODY_TARGET = target(() => document.body)
 
 const GlassLogoScene = dynamic(
   () => import('./GlassLogoScene').then(module => module.GlassLogoScene),
@@ -20,23 +19,14 @@ const GlassLogoScene = dynamic(
 )
 
 export const GlassLogo = () => {
-  const [isSceneReady, setIsSceneReady] = useState(false)
-  const [isLoaded, setIsLoaded] = useState(false)
+  const loadingTask = useLoadingTask()
+  const isLoaded = useIsLoadingFinished()
   const logoDockScroll = useLogoDockScroll()
 
-  // No scrolling until the preloader has finished
-  useLockScroll(BODY_TARGET, { enabled: !isLoaded })
-
-  // The intro always starts at the top: no restored scroll position after a reload
-  useMount(() => {
-    window.history.scrollRestoration = 'manual'
-    window.scrollTo(0, 0)
-  })
-
   useEffect(() => {
-    const timeoutId = setTimeout(() => setIsSceneReady(true), MAX_LOADING_TIME)
+    const timeoutId = setTimeout(loadingTask.functions.complete, MAX_LOADING_TIME)
     return () => clearTimeout(timeoutId)
-  }, [])
+  }, [loadingTask.functions.complete])
 
   return (
     <>
@@ -44,10 +34,10 @@ export const GlassLogo = () => {
         isVisible={isLoaded}
         isDocked={logoDockScroll.state.isDocked}
         dockProgressRef={logoDockScroll.refs.progressRef}
-        onReady={() => setIsSceneReady(true)}
+        onReady={loadingTask.functions.complete}
       />
-      <Preloader isComplete={isSceneReady} onFinish={() => setIsLoaded(true)} />
       <HeroCaptions isVisible={isLoaded} />
+      <Preloader />
     </>
   )
 }

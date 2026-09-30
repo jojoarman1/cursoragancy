@@ -1,51 +1,64 @@
 import { useGSAP } from '@gsap/react'
-import { useLatest, usePreferredReducedMotion } from '@siberiacancode/reactuse'
+import {
+  target,
+  useLatest,
+  useLockScroll,
+  useMount,
+  usePreferredReducedMotion
+} from '@siberiacancode/reactuse'
 import gsap from 'gsap'
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 
 import { INTRO_DURATION, INTRO_EASE } from '@/config/animation'
+import { loadingStore, useIsContentReady, useIsLoadingFinished } from '@/stores/loading'
 
 gsap.registerPlugin(useGSAP)
 
 export const COMPLETE_PROGRESS = 100
 const PROGRESS_DURATION = 3
-// If the content isn't ready yet, the counter holds here until it is
 const WAITING_PROGRESS = 90
 
-// The brackets lift and tilt apart with the counter's speed and settle when it stops
 const BRACKET_SELECTOR = '[data-preloader-bracket]'
 // Top speed of a power2.inOut tween is twice its average speed
 const PEAK_SPEED = (2 * COMPLETE_PROGRESS) / PROGRESS_DURATION
-const MAX_LIFT = 3 // px
-const MAX_TILT = 8 // degrees
+const MAX_LIFT = 3
+const MAX_TILT = 8
 const TILT_DURATION = 0.3
 
-export interface UsePreloaderParams {
-  isComplete: boolean
-  onFinish: () => void
-}
+const BODY_TARGET = target(() => document.body)
 
-// One continuous GSAP tween of the `--progress` CSS variable; the markup derives
-// position and opacity of the numbers from it
-export const usePreloader = ({ isComplete, onFinish }: UsePreloaderParams) => {
+export const usePreloader = () => {
+  const overlayRef = useRef<HTMLDivElement>(null)
   const progressRef = useRef<HTMLDivElement>(null)
   const tweenRef = useRef<gsap.core.Tween>(null)
+  const isContentReady = useIsContentReady()
+  const isFinished = useIsLoadingFinished()
   const reduceMotion = usePreferredReducedMotion() === 'reduce'
-  const latest = useLatest({ isComplete, onFinish, reduceMotion })
+  const latest = useLatest({ isContentReady, reduceMotion })
+  // Shown once per visit: coming back to the home page doesn't replay it
+  const [isSkipped] = useState(() => loadingStore.get().isFinished)
+
+  useLockScroll(BODY_TARGET, { enabled: !isFinished })
+
+  useMount(() => {
+    if (isSkipped) return
+
+    window.history.scrollRestoration = 'manual'
+    window.scrollTo(0, 0)
+  })
 
   useGSAP(
     () => {
+      const overlay = overlayRef.current
       const progress = progressRef.current
-      if (!progress) return
+      if (!overlay || !progress) return
 
-      // The left bracket tilts counterclockwise, the right one clockwise
       const brackets = gsap.utils.toArray<HTMLElement>(BRACKET_SELECTOR).map((bracket, index) => ({
         direction: index === 0 ? -1 : 1,
         lift: gsap.quickTo(bracket, 'y', { duration: TILT_DURATION, ease: 'power2.out' }),
         tilt: gsap.quickTo(bracket, 'rotation', { duration: TILT_DURATION, ease: 'power2.out' })
       }))
 
-      // intensity: 0 when standing still, 1 at top speed
       const tiltBrackets = (intensity: number) => {
         for (const bracket of brackets) {
           bracket.lift(-intensity * MAX_LIFT)
@@ -73,31 +86,32 @@ export const usePreloader = ({ isComplete, onFinish }: UsePreloaderParams) => {
             tiltBrackets(Math.min(speed / PEAK_SPEED, 1))
           }
 
-          if (latest.ref.current.isComplete || value < WAITING_PROGRESS) return
+          if (latest.ref.current.isContentReady || value < WAITING_PROGRESS) return
 
           tween.pause()
           tiltBrackets(0)
         },
         onComplete: () => {
           tiltBrackets(0)
-          latest.ref.current.onFinish()
-          gsap.to(progress, { autoAlpha: 0, duration: INTRO_DURATION, ease: INTRO_EASE })
+          loadingStore.set({ isFinished: true })
+          gsap.to(overlay, { autoAlpha: 0, duration: INTRO_DURATION, ease: INTRO_EASE })
         }
       })
 
       tweenRef.current = tween
     },
-    { scope: progressRef }
+    { scope: overlayRef }
   )
 
   useGSAP(
     () => {
-      if (isComplete) tweenRef.current?.resume()
+      if (isContentReady) tweenRef.current?.resume()
     },
-    { dependencies: [isComplete] }
+    { dependencies: [isContentReady] }
   )
 
   return {
-    refs: { progressRef }
+    state: { isSkipped },
+    refs: { overlayRef, progressRef }
   }
 }

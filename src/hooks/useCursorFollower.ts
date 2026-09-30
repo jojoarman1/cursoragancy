@@ -12,13 +12,10 @@ import { useIsOverLogo } from '@/stores/cursor'
 
 gsap.registerPlugin(useGSAP)
 
-// Only for a real mouse: touch screens have no cursor to follow
 const FINE_POINTER_QUERY = '(hover: hover) and (pointer: fine)'
-// Short lag: the circle stays right next to the cursor
 const FOLLOW_DURATION = 0.01
 const FOLLOW_EASE = 'power3.out'
 const TOGGLE_DURATION = 0.2
-// Over the 3D logo the circle shrinks away, as if the glass absorbs it
 const ABSORB_DURATION = 0.4
 
 const DOCUMENT_TARGET = target(() => document)
@@ -34,7 +31,10 @@ export const useCursorFollower = () => {
 
   useGSAP(
     () => {
-      gsap.to(followerRef.current, {
+      const follower = followerRef.current
+      if (!follower) return
+
+      gsap.to(follower, {
         scale: isOverLogo ? 0 : 1,
         duration: reduceMotion ? 0 : ABSORB_DURATION,
         ease: 'power2.out'
@@ -60,8 +60,11 @@ export const useCursorFollower = () => {
   )
 
   const toggle = contextSafe((isShown: boolean) => {
+    const follower = followerRef.current
+    if (!follower) return
+
     isShownRef.current = isShown
-    gsap.to(followerRef.current, { autoAlpha: isShown ? 1 : 0, duration: TOGGLE_DURATION })
+    gsap.to(follower, { autoAlpha: isShown ? 1 : 0, duration: TOGGLE_DURATION })
   })
 
   useEventListener(
@@ -72,7 +75,7 @@ export const useCursorFollower = () => {
       const move = moveRef.current
       if (!follower || !move) return
 
-      // First move after appearing: jump to the pointer instead of flying in from the corner
+      // Jump to the pointer instead of flying in from the corner
       if (!isShownRef.current) {
         gsap.set(follower, { x: event.clientX, y: event.clientY })
         toggle(true)

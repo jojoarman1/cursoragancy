@@ -10,14 +10,10 @@ export interface UseLogoSharpenParams {
   meshRef: RefObject<Mesh | null>
 }
 
-// While the logo flies into the header its corners sharpen and the rim flattens,
-// so it matches the SVG logo it turns into
 export const useLogoSharpen = ({ progressRef, meshRef }: UseLogoSharpenParams) => {
-  // The white glow layer uses the same geometry as the glass
   const glowMeshRef = useRef<Mesh>(null)
   const stepRef = useRef(0)
 
-  // Builds all shapes when the browser is idle, so the first scroll doesn't stutter
   useEffect(() => {
     if (!('requestIdleCallback' in window)) {
       const timeoutId = setTimeout(prebuildLogoGeometries)

@@ -10,11 +10,9 @@ import { cursorStore } from '@/stores/cursor'
 
 gsap.registerPlugin(useGSAP)
 
-// Hover: slow start and finish, so the white never snaps on
 const GLOW_IN_DURATION = 1.4
 const GLOW_OUT_DURATION = 0.8
 const GLOW_EASE = 'sine.inOut'
-// Docking: from this dock progress the glass turns white, matching the white SVG logo it becomes
 const DOCK_WHITEN_START = 0.7
 
 export interface UseLogoGlowParams {
@@ -23,8 +21,6 @@ export interface UseLogoGlowParams {
 
 export const useLogoGlow = ({ dockProgressRef }: UseLogoGlowParams) => {
   const reduceMotion = usePreferredReducedMotion() === 'reduce'
-  // Shader uniforms: GSAP and the frame loop set their values directly, React never re-renders.
-  // The shader shows the stronger of the two whites
   const [uniforms] = useState(() => ({ uHover: { value: 0 }, uDock: { value: 0 } }))
 
   const invalidate = useThree(state => state.invalidate)
@@ -40,7 +36,6 @@ export const useLogoGlow = ({ dockProgressRef }: UseLogoGlowParams) => {
   })
 
   const setHover = contextSafe((event: ThreeEvent<PointerEvent>, isOver: boolean) => {
-    // Only a mouse has a follower; taps on touch screens don't change the glass
     if (event.pointerType !== 'mouse') return
 
     cursorStore.set({ isOverLogo: isOver })
@@ -49,7 +44,6 @@ export const useLogoGlow = ({ dockProgressRef }: UseLogoGlowParams) => {
       duration: reduceMotion ? 0 : isOver ? GLOW_IN_DURATION : GLOW_OUT_DURATION,
       ease: GLOW_EASE,
       overwrite: true,
-      // The scene renders on demand: every step of the fade needs a frame
       onUpdate: () => invalidate()
     })
   })
