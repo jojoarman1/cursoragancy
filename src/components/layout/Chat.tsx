@@ -44,7 +44,7 @@ export const Chat = () => {
         aria-controls={PANEL_ID}
         aria-expanded={chat.state.isOpen}
         onClick={chat.functions.open}
-        className='invisible fixed bottom-6 left-11.5 z-40 h-[35px] mix-blend-difference w-[60px] cursor-pointer rounded-[17px] bg-white focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-black max-[480px]:h-[28px] max-[480px]:w-0.7]'
+        className='invisible fixed bottom-6 left-6 z-40 h-[35px] mix-blend-difference w-[60px] cursor-pointer rounded-[17px] bg-white focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-black max-[480px]:h-[28px] max-[480px]:w-0.7]'
       >
         <span
           aria-hidden='true'
@@ -64,7 +64,7 @@ export const Chat = () => {
         ref={chat.refs.panelRef}
         id={PANEL_ID}
         aria-label='Чат'
-        className='invisible fixed top-[calc(106rem+var(--chat-viewport-top,0px))] bottom-[calc(24rem+var(--chat-viewport-bottom,0px))] left-11.5 z-50 w-[min(400px,calc(100vw-92rem))] rounded-[17px] text-black selection:bg-black selection:text-white max-[480px]:right-4 max-[480px]:w-auto'
+        className='invisible fixed top-[calc(106rem+var(--chat-viewport-top,0px))] bottom-[calc(24rem+var(--chat-viewport-bottom,0px))] left-6 z-50 w-[min(400px,calc(100vw-48rem))] rounded-[17px] text-black selection:bg-black selection:text-white max-[480px]:right-6 max-[480px]:w-auto'
       >
         {/* Same box as the chat button; follows the panel's top-right corner while it expands */}
         <button

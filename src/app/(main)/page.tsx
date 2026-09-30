@@ -40,7 +40,6 @@ export default function Home() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(JSON_LD).replace(/</g, '\\u003c') }}
       />
       <Hero />
-      <section className='h-dvh bg-white text-black selection:bg-black selection:text-white' />
     </main>
   )
 }
