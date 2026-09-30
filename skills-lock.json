@@ -1,0 +1,59 @@
+{
+  "version": 1,
+  "skills": {
+    "integration-test-grill": {
+      "source": "siberiacancode/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/integration-test-grill/SKILL.md",
+      "computedHash": "ba0a951c2cefd595a1515217ea16ad24bc2b7a17faf6c961d26dcf2fae0d0fb3"
+    },
+    "juniors-best-practice": {
+      "source": "siberiacancode/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/juniors-best-practice/SKILL.md",
+      "computedHash": "5fcda153ac6f9604d909549d53471d8f2f345c087a5f2633245577ba5e72d277"
+    },
+    "react-hooks-best-practices": {
+      "source": "siberiacancode/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/react-hooks-best-practices/SKILL.md",
+      "computedHash": "6c9e8b712083d8e5c8758892ffe2fb9ba0ac7625b3ffd96770dff07efbff8a98"
+    },
+    "reactuse": {
+      "source": "siberiacancode/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/reactuse/SKILL.md",
+      "computedHash": "110a54eb97f91af1fab38c3e85c748f215ceaf0af26f20b8afd86ff54f26c9e6"
+    },
+    "testcase-grill": {
+      "source": "siberiacancode/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/testcase-grill/SKILL.md",
+      "computedHash": "172f8160892bce97cbf4cda019d27706cfe6a92d3fb726f35a1acdaaa445f463"
+    },
+    "testing-best-practices": {
+      "source": "siberiacancode/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/testing-best-practices/SKILL.md",
+      "computedHash": "6671b8d2bf53da756edfbf9d7b2a9627234d5ac59e06420eaff9f95868af9eee"
+    },
+    "unit-test-grill": {
+      "source": "siberiacancode/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/unit-test-grill/SKILL.md",
+      "computedHash": "6bb2a5124111f3214f46e7808687e866be08fc0c1b33caa5e7e2cb86200e8f78"
+    },
+    "vercel-react-best-practices": {
+      "source": "siberiacancode/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/react-best-practices/SKILL.md",
+      "computedHash": "b4a9a2a6e57ab2032d83066ccaddb223fa313a874c39fd22d672f0b469e4cff0"
+    },
+    "web-design-guidelines": {
+      "source": "siberiacancode/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/web-design-guidelines/SKILL.md",
+      "computedHash": "85695ca86b3791f335f44a1f56abea128a263b9142ac043e52cb98448b1a964f"
+    }
+  }
+}

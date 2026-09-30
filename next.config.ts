@@ -1,8 +1,11 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
-  /* config options here */
   reactCompiler: true,
-};
+  experimental: {
+    // Barrel-file packages: only the modules actually imported get bundled
+    optimizePackageImports: ['@siberiacancode/reactuse', '@react-three/drei']
+  }
+}
 
-export default nextConfig;
+export default nextConfig
