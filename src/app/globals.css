@@ -13,8 +13,82 @@
   --font-mono: var(--font-ibm-plex-mono), ui-monospace, monospace;
 }
 
+/*
+ * 1rem = 1px of the design artboard (see the html rule below), so every rem-based
+ * Tailwind scale is redefined in artboard pixels. Classes keep their usual meaning:
+ * p-4 is 16px, text-sm is 14px — at the artboard size, scaled on other screens.
+ * Breakpoints stay in rem: media queries ignore the html font-size.
+ */
+@theme {
+  --spacing: 4rem;
+
+  /* Small text never goes below 12 real pixels */
+  --text-xs: max(12px, 12rem);
+  --text-sm: max(12px, 14rem);
+  --text-base: max(12px, 16rem);
+  --text-lg: 18rem;
+  --text-xl: 20rem;
+  --text-2xl: 24rem;
+  --text-3xl: 30rem;
+  --text-4xl: 36rem;
+  --text-5xl: 48rem;
+  --text-6xl: 60rem;
+  --text-7xl: 72rem;
+  --text-8xl: 96rem;
+  --text-9xl: 128rem;
+
+  --radius: 4rem;
+  --radius-xs: 2rem;
+  --radius-sm: 4rem;
+  --radius-md: 6rem;
+  --radius-lg: 8rem;
+  --radius-xl: 12rem;
+  --radius-2xl: 16rem;
+  --radius-3xl: 24rem;
+  --radius-4xl: 32rem;
+
+  --container-3xs: 256rem;
+  --container-2xs: 288rem;
+  --container-xs: 320rem;
+  --container-sm: 384rem;
+  --container-md: 448rem;
+  --container-lg: 512rem;
+  --container-xl: 576rem;
+  --container-2xl: 672rem;
+  --container-3xl: 768rem;
+  --container-4xl: 896rem;
+  --container-5xl: 1024rem;
+  --container-6xl: 1152rem;
+  --container-7xl: 1280rem;
+
+  /* Motion tokens: one soft ease-out (easeOutQuint) for all CSS transitions */
+  --ease-smooth: cubic-bezier(0.22, 1, 0.36, 1);
+  --default-transition-duration: 500ms;
+  --default-transition-timing-function: var(--ease-smooth);
+}
+
 @layer base {
+  /* The page scales like the design artboard: the smaller of the width and height ratios wins */
+  html {
+    font-size: min(100vw / 1920, 100vh / 1080);
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  @media (max-width: 1024px) {
+    html {
+      font-size: min(100vw / 1024, 100vh / 768);
+    }
+  }
+
+  @media (max-width: 480px) {
+    html {
+      font-size: min(100vw / 480, 100vh / 667);
+    }
+  }
+
   body {
-    @apply bg-background text-foreground font-sans;
+    @apply bg-background text-base text-foreground font-sans;
+    text-rendering: optimizeLegibility;
   }
 }
