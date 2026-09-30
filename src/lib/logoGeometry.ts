@@ -1,4 +1,4 @@
-import { type BufferGeometry, ExtrudeGeometry, MathUtils, Shape, Vector2 } from 'three'
+import { type BufferGeometry, ExtrudeGeometry, Shape, Vector2 } from 'three'
 import { mergeVertices } from 'three/addons/utils/BufferGeometryUtils.js'
 
 const LOGO_POINTS = [
@@ -11,14 +11,11 @@ const LOGO_POINTS = [
 ]
 
 // Centering by the bounding box (12, 12) looks off: the arrow's mass sits top-left
-export const LOGO_SVG_SIZE = 24
-export const LOGO_CENTROID = { x: 9, y: 9 }
+const LOGO_CENTROID = { x: 9, y: 9 }
 
-const CORNER_RADIUS = { rounded: 1.5, sharp: 0 }
-const BEVEL = { rounded: 1, sharp: 0.05 }
+const CORNER_RADIUS = 1.5
+const BEVEL = 1
 const DEPTH = 1.5
-
-export const LOGO_SHARPNESS_STEPS = 16
 
 const createRoundedShape = (points: Vector2[], radius: number) => {
   const shape = new Shape()
@@ -48,33 +45,13 @@ const createSmoothGeometry = (geometry: BufferGeometry) => {
   return smoothGeometry
 }
 
-const createLogoGeometry = (sharpness: number) => {
-  const radius = MathUtils.lerp(CORNER_RADIUS.rounded, CORNER_RADIUS.sharp, sharpness)
-  const bevel = MathUtils.lerp(BEVEL.rounded, BEVEL.sharp, sharpness)
-
-  return createSmoothGeometry(
-    new ExtrudeGeometry(createRoundedShape(LOGO_POINTS, radius), {
-      depth: DEPTH,
-      curveSegments: 12,
-      bevelEnabled: true,
-      bevelThickness: bevel,
-      bevelSize: bevel,
-      bevelSegments: 16
-    }).translate(-LOGO_CENTROID.x, LOGO_CENTROID.y, -DEPTH / 2)
-  )
-}
-
-const geometryCache = new Map<number, BufferGeometry>()
-
-export const getLogoGeometry = (step: number) => {
-  const cached = geometryCache.get(step)
-  if (cached) return cached
-
-  const geometry = createLogoGeometry(step / (LOGO_SHARPNESS_STEPS - 1))
-  geometryCache.set(step, geometry)
-  return geometry
-}
-
-export const prebuildLogoGeometries = () => {
-  for (let step = 0; step < LOGO_SHARPNESS_STEPS; step++) getLogoGeometry(step)
-}
+export const LOGO_GEOMETRY = createSmoothGeometry(
+  new ExtrudeGeometry(createRoundedShape(LOGO_POINTS, CORNER_RADIUS), {
+    depth: DEPTH,
+    curveSegments: 12,
+    bevelEnabled: true,
+    bevelThickness: BEVEL,
+    bevelSize: BEVEL,
+    bevelSegments: 16
+  }).translate(-LOGO_CENTROID.x, LOGO_CENTROID.y, -DEPTH / 2)
+)

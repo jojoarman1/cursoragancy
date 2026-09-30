@@ -11,7 +11,7 @@ export const CursorFollower = () => {
     <div
       ref={cursorFollower.refs.followerRef}
       aria-hidden='true'
-      className='pointer-events-none invisible fixed top-0 left-0 z-50 size-4 rounded-full bg-white mix-blend-difference'
+      className='pointer-events-none invisible fixed top-0 left-0 z-50 size-4 rounded-full bg-white shadow-[inset_0_0_0_1px_white] mix-blend-difference'
     />
   )
 }

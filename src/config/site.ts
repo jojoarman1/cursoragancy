@@ -1,6 +1,7 @@
 export const SITE_CONFIG = {
-  // TODO: replace with the real agency name, title and description
+  // TODO: replace with the real agency name, email, title and description
   name: 'Cursor Agency',
+  email: 'hello@cursor.agency',
   title: 'Cursor Agency - разработка сайтов и цифровых продуктов',
   description: 'Digital-агентство: проектируем и разрабатываем сайты, веб-сервисы и 3D-интерфейсы',
   // Production domain comes from NEXT_PUBLIC_SITE_URL, e.g. https://example.com

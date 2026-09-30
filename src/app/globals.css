@@ -82,6 +82,11 @@
     color: black;
   }
 
+  button,
+  [role='button'] {
+    @apply select-none;
+  }
+
   @media (max-width: 1024px) {
     html {
       font-size: min(100vw / 1024, 100vh / 768);

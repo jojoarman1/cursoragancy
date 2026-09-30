@@ -2,11 +2,10 @@ import { useGSAP } from '@gsap/react'
 import { useFrame, useThree } from '@react-three/fiber'
 import { target, useEventListener, usePreferredReducedMotion } from '@siberiacancode/reactuse'
 import gsap from 'gsap'
-import { type RefObject, useRef } from 'react'
+import { useRef } from 'react'
 import { type Group, MathUtils, type Mesh } from 'three'
 
 import { INTRO_DURATION, INTRO_EASE } from '@/config/animation'
-import type { LogoDockProgress } from '@/hooks/useLogoDockScroll'
 
 gsap.registerPlugin(useGSAP)
 
@@ -18,16 +17,10 @@ const WINDOW_TARGET = target(() => window)
 export interface UseLogoAnimationParams {
   isVisible: boolean
   size: number
-  dockProgressRef: RefObject<LogoDockProgress>
   onReady: () => void
 }
 
-export const useLogoAnimation = ({
-  isVisible,
-  size,
-  dockProgressRef,
-  onReady
-}: UseLogoAnimationParams) => {
+export const useLogoAnimation = ({ isVisible, size, onReady }: UseLogoAnimationParams) => {
   const appearRef = useRef<Group>(null)
   const meshRef = useRef<Mesh>(null)
   const isReadyRef = useRef(false)
@@ -72,9 +65,8 @@ export const useLogoAnimation = ({
 
     if (reduceMotion) return
 
-    const tilt = 1 - dockProgressRef.current.value
-    const targetX = -pointer.y * 0.4 * tilt
-    const targetY = pointer.x * 0.6 * tilt
+    const targetX = -pointer.y * 0.4
+    const targetY = pointer.x * 0.6
     mesh.rotation.x = MathUtils.damp(mesh.rotation.x, targetX, 4, delta)
     mesh.rotation.y = MathUtils.damp(mesh.rotation.y, targetY, 4, delta)
 

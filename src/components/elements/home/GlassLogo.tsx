@@ -3,8 +3,8 @@
 import dynamic from 'next/dynamic'
 import { useEffect } from 'react'
 
+import { useHeaderReveal } from '@/hooks/useHeaderReveal'
 import { useLoadingTask } from '@/hooks/useLoadingTask'
-import { useLogoDockScroll } from '@/hooks/useLogoDockScroll'
 import { useIsLoadingFinished } from '@/stores/loading'
 
 import { HeroCaptions } from './HeroCaptions'
@@ -21,7 +21,7 @@ const GlassLogoScene = dynamic(
 export const GlassLogo = () => {
   const loadingTask = useLoadingTask()
   const isLoaded = useIsLoadingFinished()
-  const logoDockScroll = useLogoDockScroll()
+  const headerReveal = useHeaderReveal()
 
   useEffect(() => {
     const timeoutId = setTimeout(loadingTask.functions.complete, MAX_LOADING_TIME)
@@ -32,8 +32,7 @@ export const GlassLogo = () => {
     <>
       <GlassLogoScene
         isVisible={isLoaded}
-        isDocked={logoDockScroll.state.isDocked}
-        dockProgressRef={logoDockScroll.refs.progressRef}
+        isHidden={headerReveal.state.isHeroPassed}
         onReady={loadingTask.functions.complete}
       />
       <HeroCaptions isVisible={isLoaded} />

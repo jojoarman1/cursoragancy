@@ -7,10 +7,8 @@ import { MathUtils } from 'three'
 
 import { CursorIcon } from '@/components/icon/CursorIcon'
 import { type UseLogoAnimationParams, useLogoAnimation } from '@/hooks/useLogoAnimation'
-import { useLogoDock } from '@/hooks/useLogoDock'
 import { useLogoGlow } from '@/hooks/useLogoGlow'
-import { useLogoSharpen } from '@/hooks/useLogoSharpen'
-import { getLogoGeometry } from '@/lib/logoGeometry'
+import { LOGO_GEOMETRY } from '@/lib/logoGeometry'
 
 const MIN_DPR = 1.5
 const MAX_DPR = 3
@@ -18,8 +16,6 @@ const MAX_DPR = 3
 const getInitialDpr = () => MathUtils.clamp(window.devicePixelRatio, MIN_DPR, MAX_DPR)
 
 const ENVIRONMENT_COLOR = '#3a3a3a'
-
-const LOGO_GEOMETRY = getLogoGeometry(0)
 
 const LOGO_SIZE = 26
 
@@ -33,10 +29,9 @@ const GLOW_VERTEX_SHADER = /* glsl */ `
 
 const GLOW_FRAGMENT_SHADER = /* glsl */ `
   uniform float uHover;
-  uniform float uDock;
 
   void main() {
-    gl_FragColor = vec4(vec3(1.0), max(uHover * ${HOVER_GLOW_OPACITY.toFixed(2)}, uDock));
+    gl_FragColor = vec4(vec3(1.0), uHover * ${HOVER_GLOW_OPACITY.toFixed(2)});
   }
 `
 
@@ -47,85 +42,65 @@ type LogoProps = Omit<UseLogoAnimationParams, 'size'>
 
 const Logo = (props: LogoProps) => {
   const logoAnimation = useLogoAnimation({ ...props, size: LOGO_SIZE })
-  const logoGlow = useLogoGlow({ dockProgressRef: props.dockProgressRef })
-  const logoDock = useLogoDock({
-    progressRef: props.dockProgressRef,
-    scale: logoAnimation.state.scale
-  })
-  const logoSharpen = useLogoSharpen({
-    progressRef: props.dockProgressRef,
-    meshRef: logoAnimation.refs.meshRef
-  })
+  const logoGlow = useLogoGlow()
 
   return (
-    <group ref={logoDock.refs.dockRef}>
-      <group ref={logoAnimation.refs.appearRef} scale={0}>
-        <mesh
-          ref={logoAnimation.refs.meshRef}
-          geometry={LOGO_GEOMETRY}
-          scale={logoAnimation.state.scale}
-          onPointerOver={logoGlow.functions.onPointerOver}
-          onPointerOut={logoGlow.functions.onPointerOut}
-        >
-          <mesh
-            ref={logoSharpen.refs.glowMeshRef}
-            geometry={LOGO_GEOMETRY}
-            raycast={IGNORE_RAYCAST}
-            renderOrder={1}
-          >
-            {/* Same surface as the glass, so it skips the depth test instead of z-fighting with it;
-              back faces are culled, so only the side facing the camera glows */}
-            <shaderMaterial
-              args={[
-                {
-                  uniforms: logoGlow.state.uniforms,
-                  vertexShader: GLOW_VERTEX_SHADER,
-                  fragmentShader: GLOW_FRAGMENT_SHADER
-                }
-              ]}
-              transparent
-              depthTest={false}
-              depthWrite={false}
-            />
-          </mesh>
-          <MeshTransmissionMaterial
-            samples={16}
-            transmission={1}
-            thickness={0.2}
-            roughness={0}
-            ior={1.2}
-            chromaticAberration={0.02}
-            anisotropicBlur={0}
-            backside
+    <group ref={logoAnimation.refs.appearRef} scale={0}>
+      <mesh
+        ref={logoAnimation.refs.meshRef}
+        geometry={LOGO_GEOMETRY}
+        scale={logoAnimation.state.scale}
+        onPointerOver={logoGlow.functions.onPointerOver}
+        onPointerOut={logoGlow.functions.onPointerOut}
+      >
+        <mesh geometry={LOGO_GEOMETRY} raycast={IGNORE_RAYCAST} renderOrder={1}>
+          {/* Same surface as the glass, so it skips the depth test instead of z-fighting with it */}
+          <shaderMaterial
+            args={[
+              {
+                uniforms: logoGlow.state.uniforms,
+                vertexShader: GLOW_VERTEX_SHADER,
+                fragmentShader: GLOW_FRAGMENT_SHADER
+              }
+            ]}
+            transparent
+            depthTest={false}
+            depthWrite={false}
           />
         </mesh>
-      </group>
+        <MeshTransmissionMaterial
+          samples={16}
+          transmission={1}
+          thickness={0.2}
+          roughness={0}
+          ior={1.2}
+          chromaticAberration={0.02}
+          anisotropicBlur={0}
+          backside
+        />
+      </mesh>
     </group>
   )
 }
 
 interface GlassLogoSceneProps extends LogoProps {
-  isDocked: boolean
+  isHidden: boolean
 }
 
-export const GlassLogoScene = ({ isDocked, ...logoProps }: GlassLogoSceneProps) => {
+export const GlassLogoScene = ({ isHidden, ...logoProps }: GlassLogoSceneProps) => {
   // No PerformanceMonitor: it reads the idle gaps of on-demand rendering as low fps
   const [dpr] = useState(getInitialDpr)
 
   return (
-    // Click-through canvas over the page; pointer events come from the body
     <Canvas
       camera={{ position: [0, 0, 6], fov: 35 }}
       dpr={dpr}
       gl={{ powerPreference: 'high-performance', alpha: true }}
-      frameloop={isDocked ? 'never' : 'demand'}
-      eventSource={document.body}
-      eventPrefix='client'
+      frameloop={isHidden ? 'never' : 'demand'}
       style={{
-        position: 'fixed',
+        position: 'absolute',
         inset: 0,
-        zIndex: 30,
-        visibility: isDocked ? 'hidden' : 'visible',
+        visibility: isHidden ? 'hidden' : 'visible',
         userSelect: 'none',
         WebkitUserSelect: 'none'
       }}
