@@ -3,6 +3,7 @@
 import dynamic from 'next/dynamic'
 import { useEffect, useState } from 'react'
 
+import { HeroCaptions } from './HeroCaptions'
 import { Preloader } from './Preloader'
 
 // Finishes the preloader even if the 3D scene never reports ready (e.g. no WebGL)
@@ -26,6 +27,7 @@ export const GlassLogo = () => {
     <>
       <GlassLogoScene isVisible={isLoaded} onReady={() => setIsSceneReady(true)} />
       <Preloader isComplete={isSceneReady} onFinish={() => setIsLoaded(true)} />
+      <HeroCaptions isVisible={isLoaded} />
     </>
   )
 }

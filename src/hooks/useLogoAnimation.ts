@@ -1,14 +1,16 @@
+import { useGSAP } from '@gsap/react'
 import { useFrame, useThree } from '@react-three/fiber'
 import { usePreferredReducedMotion } from '@siberiacancode/reactuse'
+import gsap from 'gsap'
 import { useRef } from 'react'
-import { MathUtils, type Mesh } from 'three'
+import { type Group, MathUtils, type Mesh } from 'three'
+
+import { INTRO_DURATION, INTRO_EASE } from '@/config/animation'
+
+gsap.registerPlugin(useGSAP)
 
 // Share of the smaller viewport side the logo takes up
 const VIEWPORT_FILL = 0.45
-// Appear animation: scale 0 → 1, slowing down towards the end
-const APPEAR_DURATION = 2
-
-const easeOutCubic = (t: number) => 1 - (1 - t) ** 3
 
 export interface UseLogoAnimationParams {
   isVisible: boolean
@@ -17,12 +19,28 @@ export interface UseLogoAnimationParams {
 }
 
 export const useLogoAnimation = ({ isVisible, size, onReady }: UseLogoAnimationParams) => {
+  const appearRef = useRef<Group>(null)
   const meshRef = useRef<Mesh>(null)
   const isReadyRef = useRef(false)
-  const appearProgressRef = useRef(0)
   const reduceMotion = usePreferredReducedMotion() === 'reduce'
   const viewport = useThree(state => state.viewport)
   const scale = (Math.min(viewport.width, viewport.height) * VIEWPORT_FILL) / size
+
+  useGSAP(
+    () => {
+      const appear = appearRef.current
+      if (!appear || !isVisible) return
+
+      gsap.to(appear.scale, {
+        x: 1,
+        y: 1,
+        z: 1,
+        duration: reduceMotion ? 0 : INTRO_DURATION,
+        ease: INTRO_EASE
+      })
+    },
+    { dependencies: [isVisible, reduceMotion] }
+  )
 
   useFrame(({ pointer }, delta) => {
     const mesh = meshRef.current
@@ -34,13 +52,6 @@ export const useLogoAnimation = ({ isVisible, size, onReady }: UseLogoAnimationP
       onReady()
     }
 
-    if (isVisible) {
-      const step = reduceMotion ? 1 : delta / APPEAR_DURATION
-      appearProgressRef.current = Math.min(appearProgressRef.current + step, 1)
-    }
-
-    mesh.scale.setScalar(scale * easeOutCubic(appearProgressRef.current))
-
     if (reduceMotion) return
 
     mesh.rotation.x = MathUtils.damp(mesh.rotation.x, -pointer.y * 0.4, 4, delta)
@@ -48,6 +59,7 @@ export const useLogoAnimation = ({ isVisible, size, onReady }: UseLogoAnimationP
   })
 
   return {
-    refs: { meshRef }
+    state: { scale },
+    refs: { appearRef, meshRef }
   }
 }

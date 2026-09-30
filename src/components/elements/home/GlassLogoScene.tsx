@@ -77,18 +77,25 @@ const Logo = (props: LogoProps) => {
   const logoAnimation = useLogoAnimation({ ...props, size: LOGO_SIZE })
 
   return (
-    <mesh ref={logoAnimation.refs.meshRef} geometry={LOGO_GEOMETRY} scale={0}>
-      <MeshTransmissionMaterial
-        samples={16}
-        transmission={1}
-        thickness={0.2}
-        roughness={0}
-        ior={1.2}
-        chromaticAberration={0.02}
-        anisotropicBlur={0}
-        backside
-      />
-    </mesh>
+    // The group scales in on appear, the mesh fits the viewport and tilts toward the pointer
+    <group ref={logoAnimation.refs.appearRef} scale={0}>
+      <mesh
+        ref={logoAnimation.refs.meshRef}
+        geometry={LOGO_GEOMETRY}
+        scale={logoAnimation.state.scale}
+      >
+        <MeshTransmissionMaterial
+          samples={16}
+          transmission={1}
+          thickness={0.2}
+          roughness={0}
+          ior={1.2}
+          chromaticAberration={0.02}
+          anisotropicBlur={0}
+          backside
+        />
+      </mesh>
+    </group>
   )
 }
 
