@@ -12,7 +12,6 @@ export interface ChatStep {
   isNewParagraph?: boolean
   isMultiline?: boolean
   isMultiselect?: boolean
-  isOptional?: boolean
   inputMode?: 'text' | 'email'
   options?: ChatOption[]
 }
@@ -56,7 +55,7 @@ export const CHAT_STEPS: Record<string, ChatStep> = {
   projectDeadline: {
     text: ', и он должен быть завершен',
     label: 'Сроки',
-    next: 'projectEmail',
+    next: 'email',
     options: [
       { value: 'как можно скорее' },
       { value: 'за 3 месяца' },
@@ -65,14 +64,6 @@ export const CHAT_STEPS: Record<string, ChatStep> = {
       { value: 'другое' }
     ]
   },
-  projectEmail: {
-    text: 'Вы можете связаться со мной через почту',
-    label: 'Почта',
-    next: 'ps',
-    isNewParagraph: true,
-    inputMode: 'email'
-  },
-  ps: { text: 'p.s.', label: 'P.S.', isNewParagraph: true, isMultiline: true, isOptional: true },
   job: {
     text: 'Я –',
     label: 'Специальность',

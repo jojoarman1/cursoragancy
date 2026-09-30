@@ -17,9 +17,12 @@ const PANEL_ID = 'chat-panel'
 const ANSWER_CLASS_NAME =
   'mr-[6px] inline-block max-w-full cursor-pointer rounded-[10px] bg-[#eaeaeb] px-[10px] pt-[3px] pb-[1px] text-left leading-[1.3] break-words whitespace-pre-wrap text-black/50 transition-colors hover:text-black focus-visible:text-black focus-visible:outline-none'
 const OPTION_CLASS_NAME =
-  'invisible cursor-pointer rounded-[10px] border border-black/50 px-[10px] pt-[3px] pb-[1px] text-left leading-[1.3] text-black/50 transition-colors hover:text-black focus-visible:border-black focus-visible:text-black focus-visible:outline-none aria-pressed:bg-[#eaeaeb] aria-pressed:text-black'
+  'invisible mr-[4px] mb-[4px] cursor-pointer rounded-[10px] border border-black/50 px-[10px] pt-[3px] pb-[1px] text-left leading-[1.3] text-black/50 transition-colors hover:text-black focus-visible:border-black focus-visible:text-black focus-visible:outline-none aria-pressed:border-black aria-pressed:bg-black aria-pressed:text-white'
 const HINT_CLASS_NAME =
-  'relative -top-[1rem] cursor-pointer align-middle font-mono text-sm font-light text-black/50 uppercase transition-colors after:absolute after:-inset-x-[6px] after:-inset-y-[14px] hover:text-black focus-visible:text-black focus-visible:outline-none'
+  'relative -top-[1rem] cursor-pointer align-middle font-mono text-sm font-light whitespace-nowrap text-black/50 uppercase transition-colors after:absolute after:-inset-x-[6px] after:-inset-y-[14px] hover:text-black focus-visible:text-black focus-visible:outline-none'
+
+const NOTE_CLASS_NAME =
+  'invisible relative -top-[1rem] align-middle font-mono text-sm font-light whitespace-nowrap text-black/50 uppercase select-none'
 
 const PARAGRAPH_GAP = <span aria-hidden='true' className='block h-[30px]' />
 
@@ -133,31 +136,38 @@ export const Chat = () => {
                           const isSelected = chatForm.state.selected.includes(option.value)
 
                           return (
-                            // inline-flex keeps the text baseline and adds no line height of its own
-                            <span
+                            <button
                               key={option.value}
-                              className='mr-[4px] mb-[4px] inline-flex overflow-hidden rounded-[10px]'
+                              type='button'
+                              data-chat-option
+                              aria-pressed={currentStep.isMultiselect ? isSelected : undefined}
+                              onClick={() => chatForm.functions.selectOption(option)}
+                              className={OPTION_CLASS_NAME}
                             >
-                              <button
-                                type='button'
-                                data-chat-option
-                                aria-pressed={currentStep.isMultiselect ? isSelected : undefined}
-                                onClick={() => chatForm.functions.selectOption(option)}
-                                className={OPTION_CLASS_NAME}
-                              >
-                                {option.value}
-                              </button>
-                            </span>
+                              {option.value}
+                            </button>
                           )
                         })}
-                        {chatForm.state.selected.length ? (
+                        {currentStep.isMultiselect && chatForm.state.selected.length ? (
                           <button
                             type='button'
                             onClick={chatForm.functions.applySelection}
                             className={HINT_CLASS_NAME}
                           >
-                            [Apply]
+                            [Применить]
                           </button>
+                        ) : null}
+                        {currentStep.isMultiselect ? (
+                          // Kept mounted and only hidden, so it keeps its revealed state
+                          <span
+                            data-chat-option
+                            className={clsx(
+                              NOTE_CLASS_NAME,
+                              chatForm.state.selected.length > 0 && 'hidden'
+                            )}
+                          >
+                            [Можно несколько]
+                          </span>
                         ) : null}
                       </>
                     ) : (
@@ -207,7 +217,7 @@ export const Chat = () => {
             <div className='flex items-end justify-between p-[20px]'>
               <a
                 href={`mailto:${SITE_CONFIG.email}`}
-                className='relative uppercase opacity-50 after:absolute after:bottom-0 after:left-0 after:h-px after:w-full after:bg-current'
+                className='relative text-[max(10px,12rem)] uppercase opacity-50 after:absolute after:bottom-0 after:left-0 after:h-px after:w-full after:bg-current'
               >
                 {SITE_CONFIG.email}
               </a>
@@ -215,7 +225,7 @@ export const Chat = () => {
                 ref={chatForm.refs.sendRef}
                 type='button'
                 disabled={!chatForm.state.canSend}
-                onClick={chatForm.functions.send}
+                onClick={() => chatForm.functions.send(chat.functions.close)}
                 className='cursor-pointer rounded-[10px] border border-white bg-white px-[8px] py-[6px] text-[14px] leading-[1.2] text-black uppercase transition-[background-color,color,opacity] duration-300 ease-in-out disabled:cursor-default disabled:opacity-50'
               >
                 Отправить

@@ -13,6 +13,8 @@ const VIEWPORT_FILL = 0.45
 const TILT_SETTLED = 0.0005
 // One full turn around the vertical axis while the logo scales in
 const INTRO_SPIN = Math.PI * 2
+// Eases in too: at full speed from the first frame the turn looks like a jolt
+const INTRO_SPIN_EASE = 'sine.inOut'
 
 const WINDOW_TARGET = target(() => window)
 
@@ -42,7 +44,7 @@ export const useLogoAnimation = ({ isVisible, size, onReady }: UseLogoAnimationP
           onUpdate: () => invalidate()
         })
         .to(appear.scale, { x: 1, y: 1, z: 1 })
-        .fromTo(appear.rotation, { y: -INTRO_SPIN }, { y: 0 }, 0)
+        .fromTo(appear.rotation, { y: -INTRO_SPIN }, { y: 0, ease: INTRO_SPIN_EASE }, 0)
     },
     { dependencies: [isVisible, reduceMotion] }
   )

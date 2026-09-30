@@ -1,14 +1,16 @@
 import { useGSAP } from '@gsap/react'
 import {
+  useAutoScroll,
   useBoolean,
   useEventListener,
+  useLatest,
   useMediaQuery,
-  usePreferredReducedMotion
+  usePreferredReducedMotion,
+  useResizeObserver
 } from '@siberiacancode/reactuse'
 import gsap from 'gsap'
 import { type KeyboardEvent, useRef, useState } from 'react'
 
-import { LINE_REVEAL_DURATION, LINE_REVEAL_EASE } from '@/config/animation'
 import {
   CHAT_EMAIL_PATTERN,
   CHAT_FIRST_STEP_ID,
@@ -28,6 +30,8 @@ const CONTROLS_SHIFT = 8
 const CONTROLS_EASE = 'power2.out'
 const THANKS_DURATION = 0.5
 const THANKS_EASE = 'power1.out'
+// Long enough to read the thanks before the chat closes
+const THANKS_HOLD = 2
 
 const TOUCH_QUERY = '(pointer: coarse)'
 const INTERACTIVE_SELECTOR = 'a, button, [role="textbox"]'
@@ -35,7 +39,9 @@ const INTERACTIVE_SELECTOR = 'a, button, [role="textbox"]'
 const TITLE_SELECTOR = '[data-chat-title]'
 const CONTROL_SELECTOR = '[data-chat-control]'
 const OPTION_SELECTOR = '[data-chat-option]'
-const OPTIONS_STAGGER = 0.25
+const OPTIONS_STAGGER = 0.1
+const OPTIONS_FADE_DURATION = 0.5
+const OPTIONS_FADE_EASE = 'power1.out'
 
 const getHiddenElements = (form: HTMLElement | null, selector: string) =>
   Array.from(form?.querySelectorAll<HTMLElement>(selector) ?? []).filter(
@@ -90,6 +96,8 @@ export const useChatForm = () => {
   const [selected, setSelected] = useState<string[]>([])
   const [isEmailError, toggleEmailError] = useBoolean()
   const [isSent, toggleSent] = useBoolean()
+  // onClosed may run from a closure created before sending (the auto-close after the thanks)
+  const latestIsSent = useLatest(isSent)
 
   const formRef = useRef<HTMLDivElement>(null)
   const bodyRef = useRef<HTMLDivElement>(null)
@@ -104,7 +112,7 @@ export const useChatForm = () => {
 
   const step = stepId ? CHAT_STEPS[stepId] : null
   const name = answers[0]?.values[0] ?? ''
-  const canSend = !isSent && (!step || Boolean(step.isOptional))
+  const canSend = !isSent && !step
 
   const { contextSafe } = useGSAP({ scope: formRef })
 
@@ -168,12 +176,11 @@ export const useChatForm = () => {
     if (hiddenOptions.length) {
       timeline.fromTo(
         hiddenOptions,
-        { autoAlpha: 0, yPercent: 100 },
+        { autoAlpha: 0 },
         {
           autoAlpha: 1,
-          yPercent: 0,
-          duration: LINE_REVEAL_DURATION,
-          ease: LINE_REVEAL_EASE,
+          duration: OPTIONS_FADE_DURATION,
+          ease: OPTIONS_FADE_EASE,
           stagger: OPTIONS_STAGGER
         }
       )
@@ -228,6 +235,19 @@ export const useChatForm = () => {
     focusAtEnd(input)
   })
 
+  // New lines and options appear at the bottom of the conversation
+  useAutoScroll(formRef)
+
+  // The on-screen keyboard shrinks the panel and would cover the input
+  useResizeObserver(formRef, {
+    onChange: () => {
+      const form = formRef.current
+      if (!form || document.activeElement !== inputRef.current) return
+
+      form.scrollTo({ top: form.scrollHeight, behavior: 'smooth' })
+    }
+  })
+
   const onInput = () => {
     if (isEmailError) toggleEmailError(false)
   }
@@ -261,26 +281,25 @@ export const useChatForm = () => {
     toggleEmailError(false)
   }
 
-  const send = contextSafe(() => {
+  const send = contextSafe((onThanksRead: () => void) => {
     if (!canSend) return
 
-    const optionalValue = step?.isOptional ? inputRef.current?.innerText.trim() : ''
-    const sentAnswers =
-      stepId && optionalValue ? [...answers, { stepId, values: [optionalValue] }] : answers
-
-    window.location.href = getMailtoHref(sentAnswers)
+    window.location.href = getMailtoHref(answers)
     toggleSent(true)
 
     timelineRef.current?.kill()
-    gsap
+    timelineRef.current = gsap
       .timeline()
       .to(bodyRef.current, { autoAlpha: 0, duration: THANKS_DURATION, ease: THANKS_EASE })
       .to(thanksRef.current, { autoAlpha: 1, duration: THANKS_DURATION, ease: THANKS_EASE })
+      .add(onThanksRead, `+=${THANKS_HOLD}`)
   })
 
   const onClosed = contextSafe(() => {
+    // Also stops a pending auto-close after sending when the chat was closed by hand
+    timelineRef.current?.kill()
     isShownRef.current = false
-    if (!isSent) return
+    if (!latestIsSent.ref.current) return
 
     setAnswers([])
     setStepId(CHAT_FIRST_STEP_ID)

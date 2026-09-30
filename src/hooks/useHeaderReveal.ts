@@ -18,7 +18,10 @@ export const useHeaderReveal = () => {
     const headerLogo = document.querySelector<HTMLElement>(HEADER_LOGO_SELECTOR)
     if (!header || !headerLogo || !contextSafe) return
 
-    const hiddenY = () => -headerLogo.getBoundingClientRect().bottom
+    // Measured from the header's own top: the logo's rect alone includes the header's slide, so a
+    // half-hidden header would come out too short and keep peeking
+    const hiddenY = () =>
+      header.getBoundingClientRect().top - headerLogo.getBoundingClientRect().bottom
     gsap.set(headerLogo, { autoAlpha: 1 })
     gsap.set(header, { y: hiddenY })
 
@@ -35,7 +38,11 @@ export const useHeaderReveal = () => {
     ScrollTrigger.create({
       start: () => window.innerHeight,
       onEnter: () => slideHeader(true),
-      onLeaveBack: () => slideHeader(false)
+      onLeaveBack: () => slideHeader(false),
+      // A resize rescales rem, so the hidden offset has to be measured again
+      onRefresh: self => {
+        if (self.scroll() < self.start) gsap.set(header, { y: hiddenY })
+      }
     })
   })
 
