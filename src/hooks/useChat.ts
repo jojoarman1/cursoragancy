@@ -8,6 +8,14 @@ import {
 import gsap from 'gsap'
 import { useRef } from 'react'
 
+import {
+  PANEL_CONTENT_DURATION,
+  PANEL_CONTENT_EASE,
+  PANEL_CONTENT_HIDE_DURATION,
+  PANEL_CONTENT_OVERLAP,
+  PANEL_EXPAND_DURATION,
+  PANEL_EXPAND_EASE
+} from '@/config/animation'
 import { useChatButtonIntro } from '@/hooks/useChatButtonIntro'
 import { useVisualViewportOffset } from '@/hooks/useVisualViewportOffset'
 import { getButtonInset, getOpenInset, type MorphInset, toClipPath } from '@/lib/morphPanel'
@@ -15,12 +23,6 @@ import { getButtonInset, getOpenInset, type MorphInset, toClipPath } from '@/lib
 gsap.registerPlugin(useGSAP)
 
 const WINDOW_TARGET = target(() => window)
-
-const EXPAND_DURATION = 0.8
-const EXPAND_EASE = 'power3.inOut'
-const CONTENT_DURATION = 0.5
-const CONTENT_HIDE_DURATION = 0.3
-const CONTENT_EASE = 'power1.out'
 
 const ARROW_SELECTOR = '[data-chat-arrow]'
 const MINUS_SELECTOR = '[data-chat-minus]'
@@ -86,14 +88,26 @@ export const useChat = ({ onContentShow, onClosed }: UseChatParams) => {
         .set(panel, { autoAlpha: 1 })
         .to(insetRef.current, {
           ...getOpenInset(panel),
-          duration: EXPAND_DURATION,
-          ease: EXPAND_EASE,
+          duration: PANEL_EXPAND_DURATION,
+          ease: PANEL_EXPAND_EASE,
           onUpdate: renderInset
         })
         // The button's arrow tile turns into the panel's close tile over the whole expansion
-        .to(ARROW_SELECTOR, { opacity: 0, duration: EXPAND_DURATION, ease: EXPAND_EASE }, 0)
-        .to(MINUS_SELECTOR, { opacity: 1, duration: EXPAND_DURATION, ease: EXPAND_EASE }, 0)
-        .to(contentRef.current, { autoAlpha: 1, duration: CONTENT_DURATION, ease: CONTENT_EASE })
+        .to(
+          ARROW_SELECTOR,
+          { opacity: 0, duration: PANEL_EXPAND_DURATION, ease: PANEL_EXPAND_EASE },
+          0
+        )
+        .to(
+          MINUS_SELECTOR,
+          { opacity: 1, duration: PANEL_EXPAND_DURATION, ease: PANEL_EXPAND_EASE },
+          0
+        )
+        .to(
+          contentRef.current,
+          { autoAlpha: 1, duration: PANEL_CONTENT_DURATION, ease: PANEL_CONTENT_EASE },
+          `-=${PANEL_CONTENT_OVERLAP}`
+        )
         .add(onContentShow, '<')
     )
   })
@@ -113,15 +127,23 @@ export const useChat = ({ onContentShow, onClosed }: UseChatParams) => {
             onClosed()
           }
         })
-        .to(contentRef.current, { autoAlpha: 0, duration: CONTENT_HIDE_DURATION })
+        .to(contentRef.current, { autoAlpha: 0, duration: PANEL_CONTENT_HIDE_DURATION })
         .to(insetRef.current, {
           ...getButtonInset(panel, button),
-          duration: EXPAND_DURATION,
-          ease: EXPAND_EASE,
+          duration: PANEL_EXPAND_DURATION,
+          ease: PANEL_EXPAND_EASE,
           onUpdate: renderInset
         })
-        .to(MINUS_SELECTOR, { opacity: 0, duration: EXPAND_DURATION, ease: EXPAND_EASE }, '<')
-        .to(ARROW_SELECTOR, { opacity: 1, duration: EXPAND_DURATION, ease: EXPAND_EASE }, '<')
+        .to(
+          MINUS_SELECTOR,
+          { opacity: 0, duration: PANEL_EXPAND_DURATION, ease: PANEL_EXPAND_EASE },
+          '<'
+        )
+        .to(
+          ARROW_SELECTOR,
+          { opacity: 1, duration: PANEL_EXPAND_DURATION, ease: PANEL_EXPAND_EASE },
+          '<'
+        )
         .set(panel, { autoAlpha: 0 })
         .set(button, { autoAlpha: 1 })
     )

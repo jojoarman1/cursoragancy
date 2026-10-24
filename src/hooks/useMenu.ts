@@ -7,19 +7,30 @@ import {
   usePreferredReducedMotion
 } from '@siberiacancode/reactuse'
 import gsap from 'gsap'
+import { CustomEase } from 'gsap/CustomEase'
 import { useRef } from 'react'
 
+import {
+  MENU_REVEAL_DURATION,
+  MENU_REVEAL_EASE_CURVE,
+  MENU_REVEAL_STAGGER,
+  PANEL_CONTENT_DURATION,
+  PANEL_CONTENT_EASE,
+  PANEL_CONTENT_HIDE_DURATION,
+  PANEL_CONTENT_OVERLAP,
+  PANEL_EXPAND_DURATION,
+  PANEL_EXPAND_EASE
+} from '@/config/animation'
 import { getButtonInset, getOpenInset, type MorphInset, toClipPath } from '@/lib/morphPanel'
 
-gsap.registerPlugin(useGSAP)
+gsap.registerPlugin(useGSAP, CustomEase)
 
 const WINDOW_TARGET = target(() => window)
 
-const EXPAND_DURATION = 0.9
-const EXPAND_EASE = 'power3.inOut'
-const CONTENT_DURATION = 0.5
-const CONTENT_HIDE_DURATION = 0.3
-const CONTENT_EASE = 'power1.out'
+const REVEAL_SELECTOR = '[data-menu-reveal]'
+// Clips only below the item, so it can overshoot upwards without its top being cut
+const MASK_CLIP_PATH = 'inset(-100% -100% 0 -100%)'
+const REVEAL_EASE = CustomEase.create('menuReveal', MENU_REVEAL_EASE_CURVE)
 
 // The full-screen menu grows out of the header's "Меню" button, like the chat out of its button
 export const useMenu = () => {
@@ -54,6 +65,8 @@ export const useMenu = () => {
 
     menuDisclosure.open()
     toggleHasOpened(true)
+    const items = gsap.utils.toArray<HTMLElement>(REVEAL_SELECTOR, contentRef.current)
+    const masks = items.map(item => item.parentElement)
 
     if (gsap.getProperty(panel, 'visibility') === 'hidden') {
       Object.assign(insetRef.current, getButtonInset(panel, button))
@@ -65,13 +78,31 @@ export const useMenu = () => {
         .timeline()
         .set(button, { autoAlpha: 0 })
         .set(panel, { autoAlpha: 1 })
+        .set(masks, { clipPath: MASK_CLIP_PATH })
         .to(insetRef.current, {
           ...getOpenInset(panel),
-          duration: EXPAND_DURATION,
-          ease: EXPAND_EASE,
+          duration: PANEL_EXPAND_DURATION,
+          ease: PANEL_EXPAND_EASE,
           onUpdate: renderInset
         })
-        .to(contentRef.current, { autoAlpha: 1, duration: CONTENT_DURATION, ease: CONTENT_EASE })
+        .to(
+          contentRef.current,
+          { autoAlpha: 1, duration: PANEL_CONTENT_DURATION, ease: PANEL_CONTENT_EASE },
+          `-=${PANEL_CONTENT_OVERLAP}`
+        )
+        .fromTo(
+          items,
+          { yPercent: 100 },
+          {
+            yPercent: 0,
+            duration: MENU_REVEAL_DURATION,
+            ease: REVEAL_EASE,
+            stagger: MENU_REVEAL_STAGGER
+          },
+          '<'
+        )
+        // Unclipped once risen, so focus outlines aren't cut off
+        .set(masks, { clipPath: 'none' })
     )
   })
 
@@ -85,11 +116,11 @@ export const useMenu = () => {
     playTimeline(
       gsap
         .timeline({ onComplete: () => button.focus() })
-        .to(contentRef.current, { autoAlpha: 0, duration: CONTENT_HIDE_DURATION })
+        .to(contentRef.current, { autoAlpha: 0, duration: PANEL_CONTENT_HIDE_DURATION })
         .to(insetRef.current, {
           ...getButtonInset(panel, button),
-          duration: EXPAND_DURATION,
-          ease: EXPAND_EASE,
+          duration: PANEL_EXPAND_DURATION,
+          ease: PANEL_EXPAND_EASE,
           onUpdate: renderInset
         })
         .set(panel, { autoAlpha: 0 })

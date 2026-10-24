@@ -10,7 +10,7 @@ gsap.registerPlugin(useGSAP)
 const CHAR_SELECTOR = '[data-button-char]'
 const CHAR_CLONE_SELECTOR = '[data-button-char-clone]'
 
-const CHAR_DURATION = 0.6
+const CHAR_DURATION = 0.45
 // Eases in as well, so the fall doesn't start with a jolt
 const CHAR_EASE = 'power2.inOut'
 const CHAR_STAGGER = 0.045

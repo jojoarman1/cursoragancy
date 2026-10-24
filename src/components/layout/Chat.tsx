@@ -42,7 +42,7 @@ export const Chat = () => {
         ref={chat.refs.panelRef}
         id={PANEL_ID}
         aria-label='Чат'
-        className='invisible fixed top-[calc(106rem+var(--chat-viewport-top,0px))] bottom-[calc(24rem+var(--chat-viewport-bottom,0px))] left-6 z-50 w-[min(400px,calc(100vw-48rem))] rounded-[2.4rem] drop-shadow-[0_0_40rem_rgb(0_0_0/0.4)] max-[480px]:right-6 max-[480px]:w-auto'
+        className='invisible fixed top-[calc(106rem+var(--chat-viewport-top,0px))] bottom-[calc(24rem+var(--chat-viewport-bottom,0px))] left-6 z-50 w-[min(400px,calc(100vw-48rem))] rounded-[2.4rem] drop-shadow-[0_0_40rem_rgb(0_0_0/0.4)] max-[480px]:drop-shadow-none max-[480px]:right-6 max-[480px]:w-auto'
       >
         <div
           ref={chat.refs.clipRef}

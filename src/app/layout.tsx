@@ -1,8 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 import { Geist, IBM_Plex_Mono } from 'next/font/google'
 
-import { CursorFollower } from '@/components/layout/CursorFollower'
-import { ZoomLock } from '@/components/layout/ZoomLock'
 import { SITE_CONFIG } from '@/config/site'
 
 import './globals.css'
@@ -14,7 +12,8 @@ const geistSans = Geist({
 
 const ibmPlexMono = IBM_Plex_Mono({
   variable: '--font-ibm-plex-mono',
-  weight: ['100', '200', '300', '400', '500', '600', '700'],
+  // Only the "2026" caption and the 404 label use it, in the regular weight
+  weight: '400',
   subsets: ['latin', 'cyrillic']
 })
 
@@ -65,11 +64,7 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
       lang={SITE_CONFIG.lang}
       className={`${geistSans.variable} ${ibmPlexMono.variable} h-full antialiased`}
     >
-      <body className='min-h-full flex flex-col'>
-        {children}
-        <CursorFollower />
-        <ZoomLock />
-      </body>
+      <body className='min-h-full flex flex-col'>{children}</body>
     </html>
   )
 }

@@ -24,10 +24,10 @@ gsap.registerPlugin(useGSAP)
 
 const TYPING_CHAR_DELAY = 0.07
 const TYPING_CHAR_DURATION = 0.1
-const CONTROLS_DURATION = 0.8
-const CONTROLS_STAGGER = 0.15
+const CONTROLS_DURATION = 0.5
+const CONTROLS_STAGGER = 0.08
 const CONTROLS_EASE = 'power2.out'
-const THANKS_DURATION = 0.5
+const THANKS_DURATION = 0.35
 const THANKS_EASE = 'power1.out'
 // Long enough to read the thanks before the chat closes
 const THANKS_HOLD = 2
@@ -38,8 +38,8 @@ const INTERACTIVE_SELECTOR = 'a, button, [role="textbox"]'
 const TITLE_SELECTOR = '[data-chat-title]'
 const CONTROL_SELECTOR = '[data-chat-control]'
 const OPTION_SELECTOR = '[data-chat-option]'
-const OPTIONS_STAGGER = 0.1
-const OPTIONS_FADE_DURATION = 0.5
+const OPTIONS_STAGGER = 0.06
+const OPTIONS_FADE_DURATION = 0.35
 const OPTIONS_FADE_EASE = 'power1.out'
 
 const getHiddenElements = (form: HTMLElement | null, selector: string) =>

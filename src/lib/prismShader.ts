@@ -1,11 +1,13 @@
 export const PRISM_SAMPLES = 48
 
+// A full-canvas quad: clip-space corners in, uv out
 export const PRISM_VERTEX_SHADER = /* glsl */ `
+  attribute vec2 aPosition;
   varying vec2 vUv;
 
   void main() {
-    vUv = uv;
-    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    vUv = aPosition * 0.5 + 0.5;
+    gl_Position = vec4(aPosition, 0.0, 1.0);
   }
 `
 
@@ -15,6 +17,12 @@ export const PRISM_VERTEX_SHADER = /* glsl */ `
 // The glyphs keep crisp outlines (alpha = sharp text), while the smear samples a blurred copy so
 // it reads as soft gradients rather than stripes
 export const PRISM_FRAGMENT_SHADER = /* glsl */ `
+  #ifdef GL_FRAGMENT_PRECISION_HIGH
+  precision highp float;
+  #else
+  precision mediump float;
+  #endif
+
   uniform sampler2D uText;
   uniform sampler2D uSource;
   uniform vec2 uCenter;
@@ -79,6 +87,8 @@ export const PRISM_FRAGMENT_SHADER = /* glsl */ `
     float grain = hash(floor(gl_FragCoord.xy / uGrainSize)) - 0.5;
     color += grain * uGrain;
 
-    gl_FragColor = vec4(clamp(color, 0.0, 1.0), mask * uOpacity);
+    // The canvas is composited as premultiplied alpha
+    float alpha = mask * uOpacity;
+    gl_FragColor = vec4(clamp(color, 0.0, 1.0) * alpha, alpha);
   }
 `

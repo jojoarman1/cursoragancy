@@ -1,9 +1,12 @@
 import { useGSAP } from '@gsap/react'
-import { useFrame, useThree } from '@react-three/fiber'
-import { target, useEventListener, usePreferredReducedMotion } from '@siberiacancode/reactuse'
+import {
+  target,
+  useEventListener,
+  usePreferredReducedMotion,
+  useUnmount
+} from '@siberiacancode/reactuse'
 import gsap from 'gsap'
 import { useRef, useState } from 'react'
-import { MathUtils, Vector2 } from 'three'
 
 import {
   FIGMA_ABERRATION,
@@ -12,9 +15,10 @@ import {
   PRISM_FONT_SIZES,
   type PrismFontSizes
 } from '@/config/prism'
-import { createPrismUniforms } from '@/lib/prismUniforms'
+import { damp } from '@/lib/damp'
+import { createPrismState } from '@/lib/prismState'
 
-import { usePrismTexture } from './usePrismTexture'
+import { usePrismRenderer } from './usePrismRenderer'
 
 gsap.registerPlugin(useGSAP)
 
@@ -28,6 +32,8 @@ const EFFECT_EASE = 'power2.inOut'
 const CENTER_FOLLOW = 0.15
 const CENTER_DAMPING = 4
 const CENTER_SETTLED = 0.0001
+// After a pause the first step uses at most this much time instead of jumping the whole way
+const MAX_FOLLOW_DELTA = 1 / 30
 
 const WINDOW_TARGET = target(() => window)
 
@@ -46,23 +52,24 @@ export const usePrismTitle = ({
   fontSizes = PRISM_FONT_SIZES,
   onReady
 }: UsePrismTitleParams) => {
-  const invalidate = useThree(state => state.invalidate)
   const reduceMotion = usePreferredReducedMotion() === 'reduce'
   // The inverted (menu) title is greyscale, as in the design
-  const [uniforms] = useState(() => createPrismUniforms(isInverted ? 0 : undefined))
-  const isReadyRef = useRef(false)
-  const baseCenterRef = useRef(new Vector2(FIGMA_CENTER.x, 0.5))
+  const [state] = useState(() => createPrismState(isInverted ? 0 : undefined))
+  const baseCenterRef = useRef({ ...state.center })
+  const pointerRef = useRef({ x: 0, y: 0 })
+  const followRef = useRef({ frame: 0, time: 0 })
 
-  const prismTexture = usePrismTexture({
+  const renderer = usePrismRenderer({
     text,
     isInverted,
     fontSizes,
-    uniforms,
+    state,
     onDrawn: (textBox, canvas) => {
       // Figma measures the centre from the text box's top; uv runs bottom-up
       baseCenterRef.current.y = 1 - (textBox.top + textBox.height * FIGMA_CENTER.y) / canvas.height
-      uniforms.uCenter.value.copy(baseCenterRef.current)
-    }
+      Object.assign(state.center, baseCenterRef.current)
+    },
+    onFirstFrame: onReady
   })
 
   useGSAP(
@@ -70,12 +77,12 @@ export const usePrismTitle = ({
       if (!isRevealed) return
 
       const timeline = gsap
-        .timeline({ onUpdate: () => invalidate() })
-        .to(uniforms.uOpacity, { value: 1, duration: FADE_DURATION, ease: FADE_EASE })
+        .timeline({ onUpdate: renderer.functions.requestRender })
+        .to(state, { opacity: 1, duration: FADE_DURATION, ease: FADE_EASE })
         .to(
-          uniforms.uAberration,
+          state,
           {
-            value: FIGMA_ABERRATION * PRISM_ABERRATION_SCALE,
+            aberration: FIGMA_ABERRATION * PRISM_ABERRATION_SCALE,
             duration: EFFECT_DURATION,
             ease: EFFECT_EASE
           },
@@ -87,30 +94,46 @@ export const usePrismTitle = ({
     { dependencies: [isRevealed] }
   )
 
-  // On-demand rendering: without a frame request the pointer would never reach useFrame
-  useEventListener(WINDOW_TARGET, 'pointermove', () => invalidate(), { passive: true })
-
-  useFrame(({ pointer }, delta) => {
-    if (!uniforms.uText.value) return
-
-    if (!isReadyRef.current) {
-      isReadyRef.current = true
-      onReady?.()
+  const follow = (time: number) => {
+    const canvas = renderer.refs.canvasRef.current
+    if (!canvas) {
+      followRef.current.frame = 0
+      return
     }
 
-    const center = uniforms.uCenter.value
+    const rect = canvas.getBoundingClientRect()
     const base = baseCenterRef.current
-    const targetX = base.x + ((pointer.x + 1) / 2 - base.x) * CENTER_FOLLOW
-    const targetY = base.y + ((pointer.y + 1) / 2 - base.y) * CENTER_FOLLOW
-    center.x = MathUtils.damp(center.x, targetX, CENTER_DAMPING, delta)
-    center.y = MathUtils.damp(center.y, targetY, CENTER_DAMPING, delta)
+    const pointerX = (pointerRef.current.x - rect.left) / rect.width
+    const pointerY = 1 - (pointerRef.current.y - rect.top) / rect.height
+    const targetX = base.x + (pointerX - base.x) * CENTER_FOLLOW
+    const targetY = base.y + (pointerY - base.y) * CENTER_FOLLOW
+    const delta = Math.min((time - followRef.current.time) / 1000, MAX_FOLLOW_DELTA)
+    state.center.x = damp(state.center.x, targetX, CENTER_DAMPING, delta)
+    state.center.y = damp(state.center.y, targetY, CENTER_DAMPING, delta)
+    followRef.current.time = time
+    // Drawn in this same frame: a requested render would land a frame late and judder
+    renderer.functions.render()
 
     const isSettled =
-      Math.abs(center.x - targetX) < CENTER_SETTLED && Math.abs(center.y - targetY) < CENTER_SETTLED
-    if (!isSettled) invalidate()
-  })
+      Math.abs(state.center.x - targetX) < CENTER_SETTLED &&
+      Math.abs(state.center.y - targetY) < CENTER_SETTLED
+    followRef.current.frame = isSettled ? 0 : requestAnimationFrame(follow)
+  }
+
+  useEventListener(
+    WINDOW_TARGET,
+    'pointermove',
+    (event: PointerEvent) => {
+      pointerRef.current = { x: event.clientX, y: event.clientY }
+      if (!followRef.current.frame) followRef.current.frame = requestAnimationFrame(follow)
+    },
+    { passive: true, enabled: isRevealed }
+  )
+
+  useUnmount(() => cancelAnimationFrame(followRef.current.frame))
 
   return {
-    state: { uniforms, size: prismTexture.state.size }
+    state: { isSupported: renderer.state.isSupported },
+    refs: { canvasRef: renderer.refs.canvasRef }
   }
 }

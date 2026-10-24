@@ -8,8 +8,8 @@ gsap.registerPlugin(useGSAP)
 const ICON_SELECTOR = '[data-fly-icon]'
 // Past the clip's edge, so the icon is fully hidden before it comes back
 const ICON_OFFSET = 120
-const ICON_OUT_DURATION = 0.25
-const ICON_IN_DURATION = 0.4
+const ICON_OUT_DURATION = 0.2
+const ICON_IN_DURATION = 0.3
 
 export interface UseIconFlyParams {
   targetRef: RefObject<HTMLElement | null>
