@@ -10,7 +10,11 @@ export const useLoadingTask = () => {
     if (isCompleteRef.current) return
 
     isCompleteRef.current = true
-    loadingStore.set(state => ({ pendingTasks: state.pendingTasks - 1 }))
+    loadingStore.set(state => {
+      const pendingTasks = state.pendingTasks - 1
+      // Stays finished: coming back to the page doesn't replay the intro
+      return { pendingTasks, isFinished: state.isFinished || pendingTasks === 0 }
+    })
   }
 
   useMount(() => {

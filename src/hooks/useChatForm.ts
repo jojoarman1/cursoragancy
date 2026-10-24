@@ -26,7 +26,6 @@ const TYPING_CHAR_DELAY = 0.07
 const TYPING_CHAR_DURATION = 0.1
 const CONTROLS_DURATION = 0.8
 const CONTROLS_STAGGER = 0.15
-const CONTROLS_SHIFT = 8
 const CONTROLS_EASE = 'power2.out'
 const THANKS_DURATION = 0.5
 const THANKS_EASE = 'power1.out'
@@ -163,10 +162,9 @@ export const useChatForm = () => {
     if (hiddenControls.length) {
       timeline.fromTo(
         hiddenControls,
-        { autoAlpha: 0, y: CONTROLS_SHIFT },
+        { autoAlpha: 0 },
         {
           autoAlpha: 1,
-          y: 0,
           duration: CONTROLS_DURATION,
           ease: CONTROLS_EASE,
           stagger: CONTROLS_STAGGER

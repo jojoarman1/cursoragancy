@@ -8,15 +8,12 @@ import {
 import gsap from 'gsap'
 import { useRef } from 'react'
 
-import { cursorStore, useIsOverLogo } from '@/stores/cursor'
-
 gsap.registerPlugin(useGSAP)
 
 const FINE_POINTER_QUERY = '(hover: hover) and (pointer: fine)'
 const FOLLOW_DURATION = 0.01
 const FOLLOW_EASE = 'power3.out'
 const TOGGLE_DURATION = 0.2
-const ABSORB_DURATION = 0.4
 const PRESS_SCALE = 0.6
 const PRESS_DURATION = 0.2
 
@@ -41,21 +38,6 @@ export const useCursorFollower = () => {
   const pointerRef = useRef({ x: 0, y: 0 })
   const isEnabled = useMediaQuery(FINE_POINTER_QUERY)
   const reduceMotion = usePreferredReducedMotion() === 'reduce'
-  const isOverLogo = useIsOverLogo()
-
-  useGSAP(
-    () => {
-      const follower = followerRef.current
-      if (!follower) return
-
-      gsap.to(follower, {
-        scale: isOverLogo ? 0 : 1,
-        duration: reduceMotion ? 0 : ABSORB_DURATION,
-        ease: 'power2.out'
-      })
-    },
-    { dependencies: [isOverLogo, reduceMotion, isEnabled] }
-  )
 
   const { contextSafe } = useGSAP(
     () => {
@@ -77,7 +59,7 @@ export const useCursorFollower = () => {
     const follower = followerRef.current
     if (!follower || isOutlined === isOutlinedRef.current) return
 
-    // Width, not scale: scale would thicken the 1px ring, and the logo already tweens it
+    // Width, not scale: scale would thicken the 1px ring, and pressing already tweens it
     if (!follower.style.width) baseSizeRef.current = follower.offsetWidth
     const size = isOutlined ? baseSizeRef.current * OUTLINE_GROWTH : baseSizeRef.current
 
@@ -145,16 +127,13 @@ export const useCursorFollower = () => {
     { enabled: isEnabled, capture: true }
   )
 
-  const press = contextSafe((isPressed: boolean) => {
-    // Over the logo the follower is already absorbed to 0
-    if (cursorStore.get().isOverLogo) return
-
+  const press = contextSafe((isPressed: boolean) =>
     gsap.to(followerRef.current, {
       scale: isPressed ? PRESS_SCALE : 1,
       duration: reduceMotion ? 0 : PRESS_DURATION,
       ease: 'power2.out'
     })
-  })
+  )
 
   useEventListener(DOCUMENT_TARGET, 'pointerdown', () => press(true), { enabled: isEnabled })
   useEventListener(DOCUMENT_TARGET, 'pointerup', () => press(false), { enabled: isEnabled })

@@ -41,7 +41,7 @@
       "source": "siberiacancode/agent-skills",
       "sourceType": "github",
       "skillPath": "skills/testing-best-practices/SKILL.md",
-      "computedHash": "6671b8d2bf53da756edfbf9d7b2a9627234d5ac59e06420eaff9f95868af9eee"
+      "computedHash": "87a496e75c7d097765d89e896fde331931841df728ff0710ed9a4514d400d02d"
     },
     "unit-test-grill": {
       "source": "siberiacancode/agent-skills",

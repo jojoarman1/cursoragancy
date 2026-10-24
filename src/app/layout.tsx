@@ -56,7 +56,7 @@ export const viewport: Viewport = {
   // The on-screen keyboard shrinks the layout, so fixed panels like the chat stay above it
   interactiveWidget: 'resizes-content',
   themeColor: SITE_CONFIG.themeColor,
-  colorScheme: 'dark'
+  colorScheme: 'light'
 }
 
 export default function RootLayout({ children }: LayoutProps<'/'>) {

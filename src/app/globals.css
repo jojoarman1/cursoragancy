@@ -1,9 +1,9 @@
 @import 'tailwindcss';
 
 :root {
-  color-scheme: dark;
-  --background: black;
-  --foreground: #ededed;
+  color-scheme: light;
+  --background: #e8e8e3;
+  --foreground: #080807;
 }
 
 @theme inline {
@@ -83,8 +83,8 @@
   }
 
   ::selection {
-    background-color: white;
-    color: black;
+    background-color: var(--foreground);
+    color: var(--background);
   }
 
   button,
@@ -107,5 +107,55 @@
   body {
     @apply bg-background text-base text-foreground font-sans;
     text-rendering: optimizeLegibility;
+  }
+}
+
+@layer components {
+  /*
+   * Prism title: a blurred, colourful copy of the text (::before, from data-text) sits behind
+   * the sharp dark text, and the dark text is masked to the middle of the word, so the outer
+   * letters show the colours and the middle ones get coloured fringes
+   */
+  .prism-title {
+    position: relative;
+    isolation: isolate;
+  }
+
+  .prism-title::before {
+    content: attr(data-text);
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    color: transparent;
+    background-image:
+      radial-gradient(9% 40% at 9% 22%, #ff4fa0, transparent 70%),
+      radial-gradient(6% 45% at 13% 58%, #0e5a48, transparent 70%),
+      radial-gradient(7% 45% at 19% 78%, #2a2fff, transparent 70%),
+      radial-gradient(6% 35% at 22% 12%, #c04dff, transparent 70%),
+      radial-gradient(7% 40% at 86% 22%, #12493d, transparent 70%),
+      radial-gradient(9% 45% at 88% 88%, #ff3d6e, transparent 70%),
+      radial-gradient(7% 35% at 80% 98%, #2a37ff, transparent 70%),
+      linear-gradient(
+        90deg,
+        #ffb26b 0%,
+        #ff7a52 10%,
+        #ff5a8a 20%,
+        #3b3bff 30%,
+        #ff5233 45%,
+        #3b3bff 62%,
+        #ff8a5c 82%,
+        #ffbd85 100%
+      );
+    background-clip: text;
+    -webkit-background-clip: text;
+    filter: blur(0.015em);
+  }
+
+  .prism-title > span {
+    display: block;
+    text-shadow:
+      -0.015em -0.01em #ff5a1f,
+      0.015em 0.01em #2b35ff;
+    mask-image: linear-gradient(90deg, transparent 22%, #000 33%, #000 79%, transparent 88%);
   }
 }
