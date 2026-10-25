@@ -1,5 +1,8 @@
 // High enough that the shots keep their texture after compression; listed in next.config images
 export const COVER_IMAGE_QUALITY = 90
+// The cover box (875×576 in the design) and the reel's share of its width before it grows
+export const COVER_ASPECT_RATIO = 875 / 576
+export const REEL_WIDTH_SHARE = 0.45
 
 export interface ProjectMetric {
   value: string

@@ -6,9 +6,8 @@ import {
 } from '@siberiacancode/reactuse'
 import { useRef } from 'react'
 
+import { FINE_POINTER_QUERY } from '@/config/media'
 import { createFlowDistortion, type FlowDistortion } from '@/lib/flowDistortion'
-
-const FINE_POINTER_QUERY = '(hover: hover) and (pointer: fine)'
 
 // The photo smears after the mouse like liquid and settles back. WebGL is only set up on the
 // first hover, from the already loaded <img>, so covers nobody hovers cost nothing

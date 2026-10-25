@@ -2,6 +2,7 @@ import { ArrowUpIcon } from '@/components/icon/ArrowUpIcon'
 import { TileLink } from '@/components/layout/TileLink'
 import type { Project } from '@/config/projects'
 
+import { ProjectArticle } from './ProjectArticle'
 import { ProjectCover } from './ProjectCover'
 
 interface ProjectCardProps {
@@ -10,7 +11,7 @@ interface ProjectCardProps {
 }
 
 export const ProjectCard = ({ project, counter }: ProjectCardProps) => (
-  <article className='grid grid-cols-[875rem_410rem] gap-x-4 max-[1024px]:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] max-[480px]:grid-cols-1 max-[480px]:gap-y-4'>
+  <ProjectArticle className='grid grid-cols-[875rem_410rem] gap-x-4 max-[1024px]:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] max-[480px]:grid-cols-1 max-[480px]:gap-y-4'>
     <ProjectCover project={project} />
 
     <div className='flex flex-col'>
@@ -42,5 +43,5 @@ export const ProjectCard = ({ project, counter }: ProjectCardProps) => (
         />
       )}
     </div>
-  </article>
+  </ProjectArticle>
 )
