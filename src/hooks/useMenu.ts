@@ -1,19 +1,16 @@
 import { useGSAP } from '@gsap/react'
 import {
   target,
-  useBoolean,
   useDisclosure,
   useEventListener,
   usePreferredReducedMotion
 } from '@siberiacancode/reactuse'
 import gsap from 'gsap'
-import { CustomEase } from 'gsap/CustomEase'
 import { useRef } from 'react'
 
 import {
-  MENU_REVEAL_DURATION,
-  MENU_REVEAL_EASE_CURVE,
-  MENU_REVEAL_STAGGER,
+  LINE_REVEAL_DURATION,
+  LINE_REVEAL_EASE,
   PANEL_CONTENT_DURATION,
   PANEL_CONTENT_EASE,
   PANEL_CONTENT_HIDE_DURATION,
@@ -23,21 +20,18 @@ import {
 } from '@/config/animation'
 import { getButtonInset, getOpenInset, type MorphInset, toClipPath } from '@/lib/morphPanel'
 
-gsap.registerPlugin(useGSAP, CustomEase)
+gsap.registerPlugin(useGSAP)
 
 const WINDOW_TARGET = target(() => window)
 
 const REVEAL_SELECTOR = '[data-menu-reveal]'
-// Clips only below the item, so it can overshoot upwards without its top being cut
+// Clips only below the item: tall glyph tops (Й, ascenders) never get cut while it rises
 const MASK_CLIP_PATH = 'inset(-100% -100% 0 -100%)'
-const REVEAL_EASE = CustomEase.create('menuReveal', MENU_REVEAL_EASE_CURVE)
 
 // The full-screen menu grows out of the header's "Меню" button, like the chat out of its button
 export const useMenu = () => {
   const reduceMotion = usePreferredReducedMotion() === 'reduce'
   const menuDisclosure = useDisclosure()
-  // The menu's WebGL title is only created once the menu has been opened
-  const [hasOpened, toggleHasOpened] = useBoolean()
 
   const buttonRef = useRef<HTMLButtonElement>(null)
   const panelRef = useRef<HTMLElement>(null)
@@ -64,7 +58,6 @@ export const useMenu = () => {
     if (!panel || !button) return
 
     menuDisclosure.open()
-    toggleHasOpened(true)
     const items = gsap.utils.toArray<HTMLElement>(REVEAL_SELECTOR, contentRef.current)
     const masks = items.map(item => item.parentElement)
 
@@ -95,9 +88,9 @@ export const useMenu = () => {
           { yPercent: 100 },
           {
             yPercent: 0,
-            duration: MENU_REVEAL_DURATION,
-            ease: REVEAL_EASE,
-            stagger: MENU_REVEAL_STAGGER
+            // As the hero slogan: all together, each from under its own line
+            duration: LINE_REVEAL_DURATION,
+            ease: LINE_REVEAL_EASE
           },
           '<'
         )
@@ -138,7 +131,7 @@ export const useMenu = () => {
   )
 
   return {
-    state: { isOpen: menuDisclosure.opened, hasOpened },
+    state: { isOpen: menuDisclosure.opened },
     refs: { buttonRef, panelRef, clipRef, contentRef },
     functions: { open, close }
   }

@@ -11,5 +11,3 @@ export const NAVIGATION_LINKS: NavigationLink[] = [
 ]
 
 export const TELEGRAM_LINK: NavigationLink = { label: 'Telegram', href: 'https://t.me/uhoce' }
-
-export const SOCIAL_LINKS: NavigationLink[] = [TELEGRAM_LINK]

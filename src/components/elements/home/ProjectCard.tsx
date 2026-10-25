@@ -11,14 +11,14 @@ interface ProjectCardProps {
 }
 
 export const ProjectCard = ({ project, counter }: ProjectCardProps) => (
-  <ProjectArticle className='grid grid-cols-[875rem_410rem] gap-x-4 max-[1024px]:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] max-[480px]:grid-cols-1 max-[480px]:gap-y-4'>
+  <ProjectArticle className='grid grid-cols-[875rem_410rem] gap-x-4 max-lg:grid-cols-1 max-lg:gap-y-4'>
     <ProjectCover project={project} />
 
     <div className='flex flex-col'>
-      <p className='text-[12rem] leading-[16rem] font-light tracking-[-0.18rem] text-foreground/60'>
+      <p className='text-[12rem] leading-4 font-light tracking-[-0.18rem] text-foreground/60'>
         [{counter}]
       </p>
-      <h3 className='mt-2 text-[23rem] leading-[26rem] font-bold tracking-[-0.36rem]'>
+      <h3 className='mt-2 text-[23rem] leading-6.5 font-bold tracking-[-0.36rem]'>
         {project.title}
       </h3>
       <p className='mt-3 text-lg leading-[1.3] text-muted'>{project.description}</p>
@@ -39,7 +39,7 @@ export const ProjectCard = ({ project, counter }: ProjectCardProps) => (
           rel='noreferrer'
           label='Перейти на сайт'
           icon={<ArrowUpIcon className='size-4.5' />}
-          className='mt-auto self-end max-[480px]:mt-6'
+          className='mt-auto self-end max-lg:mt-6'
         />
       )}
     </div>

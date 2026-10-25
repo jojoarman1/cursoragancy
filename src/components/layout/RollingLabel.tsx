@@ -14,6 +14,7 @@ interface RollingLabelProps {
 export const RollingLabel = ({ label }: RollingLabelProps) => (
   <span aria-hidden='true' className='relative whitespace-pre [clip-path:inset(0_-50%)]'>
     <span
+      data-rolling-label
       className={clsx(
         'block group-hover:translate-y-[-120%] group-hover:blur-[3px] group-focus-visible:translate-y-[-120%] group-focus-visible:blur-[3px]',
         TRANSITION_CLASS_NAME

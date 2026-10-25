@@ -3,10 +3,10 @@ import { NAVIGATION_LINKS, TELEGRAM_LINK } from '@/config/navigation'
 
 import { HeaderLink } from './HeaderLink'
 
-// Desktop only: the links sit in the header itself; smaller screens open them from "Меню"
+// From 1024px up the links sit in the header itself; the mobile layout opens them from "Меню"
 export const HeaderNav = () => (
   <>
-    <nav aria-label='Основное меню' className='ml-auto max-[1024px]:hidden'>
+    <nav aria-label='Основное меню' className='ml-auto max-lg:hidden'>
       <ul className='flex gap-3.5 text-base'>
         {NAVIGATION_LINKS.map(link => (
           <li key={link.href}>
@@ -16,7 +16,7 @@ export const HeaderNav = () => (
       </ul>
     </nav>
 
-    <div className='ml-[300rem] text-base max-[1024px]:hidden'>
+    <div className='ml-[300rem] text-base max-lg:hidden'>
       <HeaderLink
         href={TELEGRAM_LINK.href}
         target='_blank'

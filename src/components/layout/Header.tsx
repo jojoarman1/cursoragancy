@@ -14,7 +14,7 @@ import { MENU_PANEL_ID, MenuPanel } from './menu/MenuPanel'
 import { TileButton } from './TileButton'
 
 const BAR_CLASS_NAME =
-  'pointer-events-none fixed top-0 z-40 flex h-23 items-center px-6 max-[480px]:h-auto max-[480px]:py-2.5'
+  'pointer-events-none fixed top-0 z-40 flex h-23 items-center px-6 max-lg:h-auto max-lg:py-2.5'
 
 export const Header = () => {
   const menu = useMenu()
@@ -42,7 +42,7 @@ export const Header = () => {
       </header>
 
       {/* Outside the blended bar, so the dark button keeps its own colours */}
-      <div className={clsx(BAR_CLASS_NAME, 'right-0 min-[1024px]:hidden')}>
+      <div className={clsx(BAR_CLASS_NAME, 'right-0 lg:hidden')}>
         <TileButton
           ref={menu.refs.buttonRef}
           label='Меню'

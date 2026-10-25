@@ -27,11 +27,12 @@ export const Chat = () => {
     <div ref={chat.refs.rootRef} className='font-sans'>
       <TileButton
         ref={chat.refs.buttonRef}
-        label='Начать проект'
+        label='Начать диалог'
         icon={<ArrowUpIcon className='size-4.5' />}
         aria-controls={PANEL_ID}
         aria-expanded={chat.state.isOpen}
         onClick={chat.functions.open}
+        variant='difference'
         className='invisible fixed bottom-6 left-6 z-40'
       />
 
@@ -42,7 +43,7 @@ export const Chat = () => {
         ref={chat.refs.panelRef}
         id={PANEL_ID}
         aria-label='Чат'
-        className='invisible fixed top-[calc(106rem+var(--chat-viewport-top,0px))] bottom-[calc(24rem+var(--chat-viewport-bottom,0px))] left-6 z-50 w-[min(400px,calc(100vw-48rem))] rounded-[2.4rem] drop-shadow-[0_0_40rem_rgb(0_0_0/0.4)] max-[480px]:drop-shadow-none max-[480px]:right-6 max-[480px]:w-auto'
+        className='invisible fixed top-[calc(106rem+var(--chat-viewport-top,0px))] bottom-[calc(24rem+var(--chat-viewport-bottom,0px))] left-6 z-50 w-[min(400px,calc(100vw-48rem))] rounded-[2.4rem] drop-shadow-[0_0_40rem_rgb(0_0_0/0.4)] max-lg:drop-shadow-none max-lg:right-6 max-lg:w-auto'
       >
         <div
           ref={chat.refs.clipRef}

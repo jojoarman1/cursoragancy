@@ -1,4 +1,4 @@
-export const TILE_VARIANTS = ['dark', 'light'] as const
+export const TILE_VARIANTS = ['dark', 'light', 'difference'] as const
 export type TileVariant = (typeof TILE_VARIANTS)[number]
 
 // Pressing squeezes the tile quickly; letting go springs it back with a small overshoot. Uses the
@@ -8,5 +8,8 @@ export const TILE_CLASS_NAME =
 
 export const TILE_VARIANT_CLASS_NAMES: Record<TileVariant, { root: string; tile: string }> = {
   dark: { root: 'bg-foreground text-background', tile: 'bg-background/30' },
-  light: { root: 'bg-background text-foreground', tile: 'bg-foreground text-background' }
+  light: { root: 'bg-background text-foreground', tile: 'bg-foreground text-background' },
+  // White and black blended as difference: reads like 'dark' over the light page and turns light
+  // over dark sections. Only on a fixed element, which is its own stacking context
+  difference: { root: 'bg-white text-black mix-blend-difference', tile: 'bg-black/30' }
 }

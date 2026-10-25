@@ -126,15 +126,10 @@
     @apply select-none;
   }
 
-  /* Same edges as Tailwind's max-[1024px] / max-[480px] (width < N), so the scale and the
-     layout classes switch together; with max-width they disagreed at exactly 1024 and 480 */
+  /* Only two artboards, as in the design: desktop from 1024px, mobile below it (scaled up to fill
+     tablets and narrow windows). Same edge as Tailwind's lg / max-lg, so the scale and the layout
+     classes switch together */
   @media (width < 1024px) {
-    html {
-      font-size: min(100vw / 1024, 100svh / 768);
-    }
-  }
-
-  @media (width < 480px) {
     html {
       font-size: min(100vw / 480, 100svh / 667);
     }

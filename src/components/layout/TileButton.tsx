@@ -13,7 +13,7 @@ type TileButtonProps = Omit<ComponentProps<'button'>, 'children'> &
   Omit<TileContentProps, 'variant'> &
   Partial<Pick<TileContentProps, 'variant'>>
 
-// A label with an icon tile, as in the design's "Начать проект" / "Меню" buttons
+// A label with an icon tile, as in the design's "Начать диалог" / "Меню" buttons
 export const TileButton = ({
   label,
   icon,

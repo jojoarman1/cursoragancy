@@ -6,8 +6,7 @@ interface MenuRevealProps {
   className?: string
 }
 
-// Clips only below the item, so on open it rises from under itself and can overshoot upwards
-// (useMenu animates it)
+// Clips only below the item, so on open it rises from under itself (useMenu animates it)
 export const MenuReveal = ({ children, className }: MenuRevealProps) => (
   <div className={clsx('[clip-path:inset(-100%_-100%_0_-100%)]', className)}>
     <div data-menu-reveal>{children}</div>

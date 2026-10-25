@@ -56,5 +56,19 @@ export const PROJECTS: Project[] = [
       poster: '/projects/saliystudio/reel-poster.jpg',
       aspectRatio: 1280 / 696
     }
+  },
+  {
+    slug: 'sushist',
+    title: 'Суши СТ',
+    // TODO: placeholder copy, replace with the real project description
+    description:
+      'Сайт доставки суши в Челябинске: каталог с категориями, акции на главной, корзина и онлайн-заказ',
+    url: 'https://sushist74.ru',
+    cover: '/projects/sushist/cover.png',
+    reel: {
+      video: '/projects/sushist/reel.mp4',
+      poster: '/projects/sushist/reel-poster.jpg',
+      aspectRatio: 1280 / 696
+    }
   }
 ]

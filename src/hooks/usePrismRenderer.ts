@@ -2,10 +2,10 @@ import { useLatest } from '@siberiacancode/reactuse'
 import { useEffect, useRef, useState } from 'react'
 
 import {
+  PRISM_FONT_SIZES,
   PRISM_LETTER_SPACING,
   PRISM_MOBILE_QUERY,
-  PRISM_SOURCE_BLUR,
-  type PrismFontSizes
+  PRISM_SOURCE_BLUR
 } from '@/config/prism'
 import { createPrismGl, parseHexColor, uploadPrismTexture } from '@/lib/prismGl'
 import { applyPrismState, type PrismState } from '@/lib/prismState'
@@ -15,9 +15,6 @@ const MAX_PIXEL_RATIO = 3
 
 export interface UsePrismRendererParams {
   text: string
-  // Light word on the dark panel colour instead of the page's dark-on-light
-  isInverted: boolean
-  fontSizes: PrismFontSizes
   state: PrismState
   onDrawn: (textBox: PrismTextBox, canvas: HTMLCanvasElement) => void
   onFirstFrame?: () => void
@@ -77,7 +74,7 @@ export const usePrismRenderer = (params: UsePrismRendererParams) => {
       await document.fonts.ready
       if (isCancelled) return
 
-      const { text, isInverted, fontSizes, state, onDrawn } = latest.ref.current
+      const { text, state, onDrawn } = latest.ref.current
       // No lower clamp: zoomed out the ratio drops below 1 and the CSS size grows, so a floor of 1
       // would render many times more pixels than the screen has (25x at 20% zoom)
       const pixelRatio = Math.min(window.devicePixelRatio, MAX_PIXEL_RATIO)
@@ -99,7 +96,7 @@ export const usePrismRenderer = (params: UsePrismRendererParams) => {
       const fontSize =
         Number.parseFloat(root.fontSize) *
         pixelRatio *
-        (isMobile ? fontSizes.mobile : fontSizes.desktop)
+        (isMobile ? PRISM_FONT_SIZES.mobile : PRISM_FONT_SIZES.desktop)
       const textBox = drawPrismText({
         canvas: textCanvas,
         text,
@@ -111,14 +108,11 @@ export const usePrismRenderer = (params: UsePrismRendererParams) => {
       uploadPrismTexture(prismGl, 0, textCanvas)
       uploadPrismTexture(prismGl, 1, sourceCanvas)
 
-      const [ink, paper] = isInverted
-        ? ['--background', '--foreground']
-        : ['--foreground', '--background']
       Object.assign(state, {
         halfWidth: textBox.width / 2 / canvas.width,
         blur: blur / canvas.width,
-        ink: parseHexColor(root.getPropertyValue(ink)),
-        paper: parseHexColor(root.getPropertyValue(paper))
+        ink: parseHexColor(root.getPropertyValue('--foreground')),
+        paper: parseHexColor(root.getPropertyValue('--background'))
       })
       onDrawn(textBox, textCanvas)
       hasText = true

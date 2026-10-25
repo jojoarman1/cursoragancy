@@ -5,7 +5,7 @@ export interface PrismFontSizes {
 
 // Artboard px (rem); the mobile size applies up to PRISM_MOBILE_QUERY
 export const PRISM_FONT_SIZES: PrismFontSizes = { desktop: 195, mobile: 150 }
-export const PRISM_MOBILE_QUERY = '(width < 480px)'
+export const PRISM_MOBILE_QUERY = '(width < 1024px)'
 export const PRISM_LETTER_SPACING = -0.05
 // Softens the smear source; relative to the font size
 export const PRISM_SOURCE_BLUR = 0.012

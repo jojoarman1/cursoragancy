@@ -12,11 +12,9 @@ export const HeroCaptions = (props: HeroCaptionsProps) => {
     <div ref={heroCaptions.refs.containerRef}>
       {/* In the header row, where the logo would be: on home the logo stays hidden until the big
           word scrolls away, and by then this has scrolled away too */}
-      <p className='absolute top-6 left-6 max-w-[720rem] text-[42rem] leading-[1.1] font-bold tracking-[-0.03em] max-[480px]:top-3 max-[480px]:left-4 max-[480px]:max-w-[300rem] max-[480px]:text-[24rem]'>
-        <span className='block overflow-hidden'>
-          <span data-hero-caption className='invisible block'>
-            {SITE_CONFIG.slogan}
-          </span>
+      <p className='absolute top-6 left-6 max-w-[720rem] text-[42rem] leading-[1.1] font-bold tracking-[-0.03em] max-lg:top-3 max-lg:left-4 max-lg:max-w-[300rem] max-lg:text-[24rem]'>
+        <span data-hero-slogan className='invisible block'>
+          {SITE_CONFIG.slogan}
         </span>
       </p>
 

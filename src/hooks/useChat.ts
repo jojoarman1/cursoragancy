@@ -26,6 +26,10 @@ const WINDOW_TARGET = target(() => window)
 
 const ARROW_SELECTOR = '[data-chat-arrow]'
 const MINUS_SELECTOR = '[data-chat-minus]'
+// The button's label (RollingLabel) rises from under its line as the button comes back
+const LABEL_SELECTOR = '[data-rolling-label]'
+const LABEL_RISE_DURATION = 0.7
+const LABEL_RISE_EASE = 'power3.out'
 
 export interface UseChatParams {
   onContentShow: () => void
@@ -146,6 +150,11 @@ export const useChat = ({ onContentShow, onClosed }: UseChatParams) => {
         )
         .set(panel, { autoAlpha: 0 })
         .set(button, { autoAlpha: 1 })
+        .fromTo(
+          button.querySelector(LABEL_SELECTOR),
+          { yPercent: 110 },
+          { yPercent: 0, duration: LABEL_RISE_DURATION, ease: LABEL_RISE_EASE }
+        )
     )
   })
 

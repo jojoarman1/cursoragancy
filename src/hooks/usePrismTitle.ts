@@ -8,13 +8,7 @@ import {
 import gsap from 'gsap'
 import { useRef, useState } from 'react'
 
-import {
-  FIGMA_ABERRATION,
-  FIGMA_CENTER,
-  PRISM_ABERRATION_SCALE,
-  PRISM_FONT_SIZES,
-  type PrismFontSizes
-} from '@/config/prism'
+import { FIGMA_ABERRATION, FIGMA_CENTER, PRISM_ABERRATION_SCALE } from '@/config/prism'
 import { damp } from '@/lib/damp'
 import { createPrismState } from '@/lib/prismState'
 
@@ -40,29 +34,18 @@ const WINDOW_TARGET = target(() => window)
 export interface UsePrismTitleParams {
   text: string
   isRevealed: boolean
-  isInverted?: boolean
-  fontSizes?: PrismFontSizes
   onReady?: () => void
 }
 
-export const usePrismTitle = ({
-  text,
-  isRevealed,
-  isInverted = false,
-  fontSizes = PRISM_FONT_SIZES,
-  onReady
-}: UsePrismTitleParams) => {
+export const usePrismTitle = ({ text, isRevealed, onReady }: UsePrismTitleParams) => {
   const reduceMotion = usePreferredReducedMotion() === 'reduce'
-  // The inverted (menu) title is greyscale, as in the design
-  const [state] = useState(() => createPrismState(isInverted ? 0 : undefined))
+  const [state] = useState(createPrismState)
   const baseCenterRef = useRef({ ...state.center })
   const pointerRef = useRef({ x: 0, y: 0 })
   const followRef = useRef({ frame: 0, time: 0 })
 
   const renderer = usePrismRenderer({
     text,
-    isInverted,
-    fontSizes,
     state,
     onDrawn: (textBox, canvas) => {
       // Figma measures the centre from the text box's top; uv runs bottom-up

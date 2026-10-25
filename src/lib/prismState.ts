@@ -3,7 +3,7 @@ import { FIGMA_CENTER, PRISM_SATURATION } from '@/config/prism'
 import type { PrismGl } from './prismGl'
 
 // Everything the prism shader reads; GSAP and the pointer follow tween these numbers directly
-export const createPrismState = (saturation = PRISM_SATURATION) => ({
+export const createPrismState = () => ({
   center: { x: FIGMA_CENTER.x, y: 0.5 },
   // Zero aberration draws the plain dark word: every band samples the same pixel
   aberration: 0,
@@ -12,7 +12,7 @@ export const createPrismState = (saturation = PRISM_SATURATION) => ({
   blur: 0,
   // The word fades in before the effect grows
   opacity: 0,
-  saturation,
+  saturation: PRISM_SATURATION,
   ink: [0, 0, 0] as [number, number, number],
   paper: [1, 1, 1] as [number, number, number]
 })

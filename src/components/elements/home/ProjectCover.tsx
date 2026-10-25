@@ -12,8 +12,8 @@ import {
 import { useFlowDistortion } from '@/hooks/useFlowDistortion'
 import { getReelDropPercent } from '@/lib/projectReel'
 
-// The cover's share of the viewport at each layout: 875 of 1920, two thirds, full width
-const COVER_SIZES = '(width < 480px) 100vw, (width < 1024px) 66vw, 46vw'
+// The cover's share of the viewport: full width on phones, 875 of the 1920 artboard otherwise
+const COVER_SIZES = '(width < 1024px) 100vw, 46vw'
 
 // The reel box's inline style, with the drop distance as a CSS variable for .project-reel
 type ReelStyle = CSSProperties & { '--reel-drop': string }
@@ -33,7 +33,7 @@ export const ProjectCover = ({ project }: ProjectCoverProps) => {
   return (
     <div
       ref={flowDistortion.refs.coverRef}
-      className='project-cover relative overflow-hidden bg-foreground/10'
+      className='project-cover relative overflow-hidden rounded-sm bg-foreground/10'
       style={{ aspectRatio: COVER_ASPECT_RATIO }}
     >
       <Image
