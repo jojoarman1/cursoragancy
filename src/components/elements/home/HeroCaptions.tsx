@@ -1,5 +1,6 @@
 'use client'
 
+import { SITE_CONFIG } from '@/config/site'
 import { type UseHeroCaptionsParams, useHeroCaptions } from '@/hooks/useHeroCaptions'
 
 type HeroCaptionsProps = UseHeroCaptionsParams
@@ -8,9 +9,19 @@ export const HeroCaptions = (props: HeroCaptionsProps) => {
   const heroCaptions = useHeroCaptions(props)
 
   return (
-    <div ref={heroCaptions.refs.containerRef} className='font-mono text-sm'>
+    <div ref={heroCaptions.refs.containerRef}>
+      {/* In the header row, where the logo would be: on home the logo stays hidden until the big
+          word scrolls away, and by then this has scrolled away too */}
+      <p className='absolute top-6 left-6 max-w-[720rem] text-[42rem] leading-[1.1] font-bold tracking-[-0.03em] max-[480px]:top-3 max-[480px]:left-4 max-[480px]:max-w-[300rem] max-[480px]:text-[24rem]'>
+        <span className='block overflow-hidden'>
+          <span data-hero-caption className='invisible block'>
+            {SITE_CONFIG.slogan}
+          </span>
+        </span>
+      </p>
+
       {/* Chat button height, so their centers line up */}
-      <p className='absolute right-6 bottom-6 flex h-[33rem] items-center uppercase'>
+      <p className='absolute right-6 bottom-6 flex h-[33rem] items-center font-mono text-sm uppercase'>
         {/* Clips to the text's own height, so the lowered caption can't peek out */}
         <span className='block overflow-hidden'>
           <span data-hero-caption className='invisible block'>

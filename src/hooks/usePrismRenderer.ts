@@ -2,7 +2,6 @@ import { useLatest } from '@siberiacancode/reactuse'
 import { useEffect, useRef, useState } from 'react'
 
 import {
-  PRISM_GRAIN_SIZE,
   PRISM_LETTER_SPACING,
   PRISM_MOBILE_QUERY,
   PRISM_SOURCE_BLUR,
@@ -110,7 +109,6 @@ export const usePrismRenderer = (params: UsePrismRendererParams) => {
       Object.assign(state, {
         halfWidth: textBox.width / 2 / canvas.width,
         blur: blur / canvas.width,
-        grainSize: PRISM_GRAIN_SIZE * pixelRatio,
         ink: parseHexColor(root.getPropertyValue(ink)),
         paper: parseHexColor(root.getPropertyValue(paper))
       })

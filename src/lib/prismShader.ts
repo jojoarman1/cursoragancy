@@ -1,16 +1,5 @@
 export const PRISM_SAMPLES = 48
 
-// A full-canvas quad: clip-space corners in, uv out
-export const PRISM_VERTEX_SHADER = /* glsl */ `
-  attribute vec2 aPosition;
-  varying vec2 vUv;
-
-  void main() {
-    vUv = aPosition * 0.5 + 0.5;
-    gl_Position = vec4(aPosition, 0.0, 1.0);
-  }
-`
-
 // Figma's "Lens distortion" in lateral mode: the fill is the word itself split into colour bands
 // that are scaled around the centre (warm ones outwards, blue ones inwards) by an amount that grows
 // linearly with the distance from the centre.
@@ -31,8 +20,6 @@ export const PRISM_FRAGMENT_SHADER = /* glsl */ `
   uniform float uBlur;
   uniform float uOpacity;
   uniform float uSaturation;
-  uniform float uGrain;
-  uniform float uGrainSize;
   uniform vec3 uInk;
   uniform vec3 uPaper;
   varying vec2 vUv;
@@ -46,13 +33,6 @@ export const PRISM_FRAGMENT_SHADER = /* glsl */ `
   // Interleaved gradient noise: shifts each pixel's samples a little to hide the sampling steps
   float noise(vec2 position) {
     return fract(52.9829189 * fract(dot(position, vec2(0.06711056, 0.00583715))));
-  }
-
-  // Hash without sine (Dave Hoskins): random enough for grain, stable on mobile GPUs
-  float hash(vec2 position) {
-    vec3 p3 = fract(vec3(position.xyx) * 0.1031);
-    p3 += dot(p3, p3.yzx + 33.33);
-    return fract((p3.x + p3.y) * p3.z);
   }
 
   void main() {
@@ -82,10 +62,6 @@ export const PRISM_FRAGMENT_SHADER = /* glsl */ `
 
     float luma = dot(color, vec3(0.299, 0.587, 0.114));
     color = mix(vec3(luma), color, uSaturation);
-
-    // Static grain: hashed per grain cell, so it costs nothing while the scene is idle
-    float grain = hash(floor(gl_FragCoord.xy / uGrainSize)) - 0.5;
-    color += grain * uGrain;
 
     // The canvas is composited as premultiplied alpha
     float alpha = mask * uOpacity;

@@ -6,6 +6,7 @@ import { useRef } from 'react'
 import { ArrowUpIcon } from '@/components/icon/ArrowUpIcon'
 import type { NavigationLink } from '@/config/navigation'
 import { useIconFly } from '@/hooks/useIconFly'
+import { handleSectionLinkClick } from '@/lib/scrollToSection'
 
 interface MenuLinkProps {
   link: NavigationLink
@@ -20,7 +21,10 @@ export const MenuLink = ({ link, onClick }: MenuLinkProps) => {
     <Link
       ref={linkRef}
       href={link.href}
-      onClick={onClick}
+      onClick={event => {
+        onClick()
+        handleSectionLinkClick(event, link.href)
+      }}
       className='flex items-center justify-between py-[10rem] text-[56rem] leading-none font-bold tracking-[-0.03em] max-[480px]:text-[44rem]'
     >
       {link.label}

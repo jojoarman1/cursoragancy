@@ -1,8 +1,13 @@
+const TAGLINE = 'Студия веб-разработки и дизайна'
+
 export const SITE_CONFIG = {
   // TODO: replace with the real agency name, email, title and description
   name: 'dialog',
   email: 'hello@bydialog.com',
-  title: 'DIALOG | Студия брендинга и веб-дизайна',
+  tagline: TAGLINE,
+  // The statement in the top-left corner of the hero
+  slogan: 'Мы креативное агентство, специализирующееся на достижении превосходных результатов.',
+  title: `DIALOG | ${TAGLINE}`,
   description: 'Digital-агентство: проектируем и разрабатываем сайты, веб-сервисы и 3D-интерфейсы',
   // Production domain comes from NEXT_PUBLIC_SITE_URL, e.g. https://example.com
   url: process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000',

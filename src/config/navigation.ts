@@ -7,9 +7,9 @@ export interface NavigationLink {
 export const NAVIGATION_LINKS: NavigationLink[] = [
   { label: 'Кто мы?', href: '/#about' },
   { label: 'Работы', href: '/#works' },
-  { label: 'Сервис', href: '/#services' },
-  { label: 'Faq', href: '/#faq' },
-  { label: 'Старт', href: '/#start' }
+  { label: 'Сервис', href: '/#services' }
 ]
 
-export const SOCIAL_LINKS: NavigationLink[] = [{ label: 'Telegram', href: 'https://t.me/uhoce' }]
+export const TELEGRAM_LINK: NavigationLink = { label: 'Telegram', href: 'https://t.me/uhoce' }
+
+export const SOCIAL_LINKS: NavigationLink[] = [TELEGRAM_LINK]

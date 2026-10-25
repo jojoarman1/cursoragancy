@@ -1,4 +1,4 @@
-import { FIGMA_CENTER, PRISM_GRAIN, PRISM_SATURATION } from '@/config/prism'
+import { FIGMA_CENTER, PRISM_SATURATION } from '@/config/prism'
 
 import type { PrismGl } from './prismGl'
 
@@ -13,9 +13,6 @@ export const createPrismState = (saturation = PRISM_SATURATION) => ({
   // The word fades in before the effect grows
   opacity: 0,
   saturation,
-  grain: PRISM_GRAIN,
-  // Grain cell size in device pixels, so it stays the same on dense screens
-  grainSize: 1,
   ink: [0, 0, 0] as [number, number, number],
   paper: [1, 1, 1] as [number, number, number]
 })
@@ -29,8 +26,6 @@ export const applyPrismState = ({ gl, uniforms }: PrismGl, state: PrismState) =>
   gl.uniform1f(uniforms.uBlur, state.blur)
   gl.uniform1f(uniforms.uOpacity, state.opacity)
   gl.uniform1f(uniforms.uSaturation, state.saturation)
-  gl.uniform1f(uniforms.uGrain, state.grain)
-  gl.uniform1f(uniforms.uGrainSize, state.grainSize)
   gl.uniform3fv(uniforms.uInk, state.ink)
   gl.uniform3fv(uniforms.uPaper, state.paper)
 }

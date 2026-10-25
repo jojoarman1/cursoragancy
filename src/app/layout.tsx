@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import { Geist, IBM_Plex_Mono } from 'next/font/google'
 
+import { GrainOverlay } from '@/components/layout/GrainOverlay'
 import { SITE_CONFIG } from '@/config/site'
 
 import './globals.css'
@@ -64,7 +65,10 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
       lang={SITE_CONFIG.lang}
       className={`${geistSans.variable} ${ibmPlexMono.variable} h-full antialiased`}
     >
-      <body className='min-h-full flex flex-col'>{children}</body>
+      <body className='min-h-full flex flex-col'>
+        {children}
+        <GrainOverlay />
+      </body>
     </html>
   )
 }

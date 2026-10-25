@@ -4,11 +4,13 @@
   color-scheme: light;
   --background: #e8e8e3;
   --foreground: #080807;
+  --muted: #6b645c;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-ibm-plex-mono), ui-monospace, monospace;
 }
@@ -61,6 +63,10 @@
   --container-7xl: 1280rem;
 
   --ease-smooth: cubic-bezier(0.22, 1, 0.36, 1);
+  /* Rolling label hover, taken from supersolid.agency */
+  --ease-roll: cubic-bezier(0.16, 1, 0.35, 1);
+  /* Project hover reel, taken from bymonolog.com */
+  --ease-expo-out: cubic-bezier(0.2, 1, 0.36, 1);
   --default-transition-duration: 500ms;
   --default-transition-timing-function: var(--ease-smooth);
 }
@@ -92,13 +98,15 @@
     @apply select-none;
   }
 
-  @media (max-width: 1024px) {
+  /* Same edges as Tailwind's max-[1024px] / max-[480px] (width < N), so the scale and the
+     layout classes switch together; with max-width they disagreed at exactly 1024 and 480 */
+  @media (width < 1024px) {
     html {
       font-size: min(100vw / 1024, 100vh / 768);
     }
   }
 
-  @media (max-width: 480px) {
+  @media (width < 480px) {
     html {
       font-size: min(100vw / 480, 100vh / 667);
     }
@@ -157,5 +165,82 @@
       -0.015em -0.01em #ff5a1f,
       0.015em 0.01em #2b35ff;
     mask-image: linear-gradient(90deg, transparent 22%, #000 33%, #000 79%, transparent 88%);
+  }
+
+  /*
+   * Film grain over the whole page, the way supersolid.agency does it: a fixed layer twice the
+   * viewport, tiled with a noise PNG (public/grain.png, dark and light specks so it reads on any
+   * background), jumped between six offsets twice a second
+   */
+  /*
+   * Project hover reel, after bymonolog.com: a video box in the middle of the cover rises from
+   * below tilted back and settles flat (.project-reel), then grows to most of the cover without
+   * filling it (.project-reel-grow). Leaving runs it backwards: shrink first, then drop away.
+   * Each delay sits on the state being entered, which is how CSS orders the two steps both ways.
+   * Touch screens skip it
+   */
+  .project-reel {
+    opacity: 0;
+    transform: scale(0.95) perspective(600px) translateY(75%) perspective(500px) rotateX(18deg);
+    transition:
+      opacity 0.15s cubic-bezier(0.25, 0, 0.25, 1) 0.3s,
+      transform 0.85s var(--ease-expo-out) 0.3s;
+  }
+
+  .project-reel-grow {
+    transition: scale 0.9s var(--ease-expo-out);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .project-cover:hover .project-reel {
+      opacity: 1;
+      transform: translateY(0%) rotateX(0) scale(1);
+      transition-delay: 0s;
+    }
+
+    .project-cover:hover .project-reel-grow {
+      scale: 1.9;
+      transition-delay: 0.35s;
+    }
+  }
+
+  .grain-overlay {
+    position: fixed;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200vh;
+    background-image: url('/grain.png');
+    pointer-events: none;
+    will-change: transform;
+    animation: grain 0.5s steps(6) infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .grain-overlay {
+      animation: none;
+    }
+  }
+}
+
+@keyframes grain {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  17% {
+    transform: translate(-5%, -10%);
+  }
+  33% {
+    transform: translate(3%, -15%);
+  }
+  50% {
+    transform: translate(12%, 9%);
+  }
+  67% {
+    transform: translate(9%, 4%);
+  }
+  83% {
+    transform: translate(-1%, 7%);
   }
 }

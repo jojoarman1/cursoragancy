@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 
 import { Hero } from '@/components/elements/home/Hero'
+import { Projects } from '@/components/elements/home/Projects'
 import { SITE_CONFIG } from '@/config/site'
 
 export const metadata: Metadata = {
@@ -40,6 +41,7 @@ export default function Home() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(JSON_LD).replace(/</g, '\\u003c') }}
       />
       <Hero />
+      <Projects />
     </main>
   )
 }

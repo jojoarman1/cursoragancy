@@ -18,3 +18,7 @@ export const PANEL_CONTENT_OVERLAP = 0.3
 export const MENU_REVEAL_DURATION = 0.7
 export const MENU_REVEAL_EASE_CURVE = '0.48, 1.68, 0.64, 1'
 export const MENU_REVEAL_STAGGER = 0.04
+
+// Header links gliding to a section of the page
+export const SECTION_SCROLL_DURATION = 1.2
+export const SECTION_SCROLL_EASE = 'power3.inOut'
