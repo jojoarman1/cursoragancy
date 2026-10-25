@@ -5,6 +5,8 @@ import clsx from 'clsx'
 import { SERVICES } from '@/config/services'
 import { useScrollStep } from '@/hooks/useScrollStep'
 
+import { SectionLabel } from './SectionLabel'
+
 const TITLE_ID = 'services-title'
 
 // Full screen and pinned (from 1024px up): scrolling steps through the services, the current one
@@ -22,10 +24,13 @@ export const Services = () => {
       className='flex h-svh flex-col justify-center bg-foreground pr-6 pl-[86rem] text-background max-lg:h-auto max-lg:px-4 max-lg:pt-[50rem] max-lg:pb-[40rem]'
     >
       {/* Lines up with the list, past the photo column */}
-      <h2 id={TITLE_ID} className='ml-[567rem] flex items-center gap-2 text-[20rem] max-lg:ml-0'>
-        <span aria-hidden='true' className='size-3.5 shrink-0 rounded-full bg-background/60' />
+      <SectionLabel
+        id={TITLE_ID}
+        className='ml-[567rem] text-[20rem] max-lg:ml-0'
+        dotClassName='bg-background/60'
+      >
         Чем мы вам сможем помочь?
-      </h2>
+      </SectionLabel>
 
       <div className='mt-[126rem] grid grid-cols-[469rem_1fr] gap-x-[98rem] max-lg:mt-6 max-lg:grid-cols-1'>
         {/* As tall as the list: the grid row stretches it. The mobile layout shows the list alone */}

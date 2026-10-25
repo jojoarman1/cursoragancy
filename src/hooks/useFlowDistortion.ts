@@ -4,15 +4,21 @@ import {
   usePreferredReducedMotion,
   useUnmount
 } from '@siberiacancode/reactuse'
-import { useRef } from 'react'
+import { type RefObject, useRef } from 'react'
 
 import { FINE_POINTER_QUERY } from '@/config/media'
 import { createFlowDistortion, type FlowDistortion } from '@/lib/flowDistortion'
 
+export interface UseFlowDistortionParams {
+  // Where the pointer stirs the photo, when that is more than the photo itself (a whole section)
+  areaRef?: RefObject<HTMLElement | null>
+}
+
 // The photo smears after the mouse like liquid and settles back. WebGL is only set up on the
 // first hover, from the already loaded <img>, so covers nobody hovers cost nothing
-export const useFlowDistortion = () => {
+export const useFlowDistortion = ({ areaRef }: UseFlowDistortionParams = {}) => {
   const coverRef = useRef<HTMLDivElement>(null)
+  const pointerAreaRef = areaRef ?? coverRef
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const imageRef = useRef<HTMLImageElement>(null)
   const distortionRef = useRef<FlowDistortion>(null)
@@ -29,10 +35,10 @@ export const useFlowDistortion = () => {
     return distortionRef.current
   }
 
-  useEventListener(coverRef, 'pointerenter', (event: PointerEvent) => {
+  useEventListener(pointerAreaRef, 'pointerenter', (event: PointerEvent) => {
     if (isEnabled) getDistortion()?.enter(event.clientX, event.clientY)
   })
-  useEventListener(coverRef, 'pointermove', (event: PointerEvent) => {
+  useEventListener(pointerAreaRef, 'pointermove', (event: PointerEvent) => {
     if (isEnabled) distortionRef.current?.move(event.clientX, event.clientY)
   })
 

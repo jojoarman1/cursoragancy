@@ -5,12 +5,16 @@
   --background: #e8e8e3;
   --foreground: #080807;
   --muted: #6b645c;
+  --faq: #202020;
+  --accent: #176308;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-muted: var(--muted);
+  --color-faq: var(--faq);
+  --color-accent: var(--accent);
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-ibm-plex-mono), ui-monospace, monospace;
 }
@@ -111,7 +115,6 @@
     overscroll-behavior: none;
   }
 
-  /* No pinch or double-tap zoom */
   html {
     touch-action: pan-x pan-y;
   }
@@ -126,9 +129,6 @@
     @apply select-none;
   }
 
-  /* Only two artboards, as in the design: desktop from 1024px, mobile below it (scaled up to fill
-     tablets and narrow windows). Same edge as Tailwind's lg / max-lg, so the scale and the layout
-     classes switch together */
   @media (width < 1024px) {
     html {
       font-size: min(100vw / 480, 100svh / 667);

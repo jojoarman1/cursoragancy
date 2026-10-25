@@ -19,7 +19,7 @@ const COVER_SIZES = '(width < 1024px) 100vw, 46vw'
 type ReelStyle = CSSProperties & { '--reel-drop': string }
 
 interface ProjectCoverProps {
-  project: Pick<Project, 'title' | 'cover' | 'reel'>
+  project: Pick<Project, 'title' | 'cover' | 'logo' | 'reel'>
 }
 
 export const ProjectCover = ({ project }: ProjectCoverProps) => {
@@ -50,6 +50,18 @@ export const ProjectCover = ({ project }: ProjectCoverProps) => {
         ref={flowDistortion.refs.canvasRef}
         className='pointer-events-none absolute inset-0 size-full opacity-0'
       />
+      {!!project.logo && (
+        // After the canvas, so it stays crisp while the photo smears, and before the dimming and the
+        // reel, which cover it. Turned white and blended as difference, so a logo of any colour reads
+        // on both light and dark parts of the photo. A .svg src is served unoptimised
+        <Image
+          src={project.logo.src}
+          alt=''
+          width={project.logo.width}
+          height={project.logo.height}
+          className='pointer-events-none absolute top-1/2 left-1/2 w-[20%] -translate-1/2 brightness-0 invert mix-blend-difference'
+        />
+      )}
       {/* Dims the photo while the reel plays, so the video stands out */}
       <div
         aria-hidden='true'

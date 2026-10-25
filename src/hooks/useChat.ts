@@ -18,6 +18,7 @@ import {
 } from '@/config/animation'
 import { useChatButtonIntro } from '@/hooks/useChatButtonIntro'
 import { useVisualViewportOffset } from '@/hooks/useVisualViewportOffset'
+import { CHAT_OPEN_EVENT } from '@/lib/chatEvents'
 import { getButtonInset, getOpenInset, type MorphInset, toClipPath } from '@/lib/morphPanel'
 
 gsap.registerPlugin(useGSAP)
@@ -157,6 +158,8 @@ export const useChat = ({ onContentShow, onClosed }: UseChatParams) => {
         )
     )
   })
+
+  useEventListener(WINDOW_TARGET, CHAT_OPEN_EVENT, () => open())
 
   useEventListener(
     WINDOW_TARGET,

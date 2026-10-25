@@ -18,6 +18,13 @@ export interface ProjectReel {
   aspectRatio: number
 }
 
+// The SVG's own size, so the image box has the logo's proportions before it loads
+export interface ProjectLogo {
+  src: string
+  width: number
+  height: number
+}
+
 export interface Project {
   slug: string
   title: string
@@ -26,6 +33,8 @@ export interface Project {
   metric?: ProjectMetric
   // In public/projects/<slug>/; 875×576 in the design, so ~1750px wide stays sharp on retina
   cover: string
+  // The client's logo, centred over the cover; its colour doesn't matter (shown inverted)
+  logo?: ProjectLogo
   reel: ProjectReel
 }
 
@@ -38,6 +47,7 @@ export const PROJECTS: Project[] = [
     url: 'https://viceseason.com',
     metric: { value: '42%', label: 'Увеличение кол-ва клиентов и продаж' },
     cover: '/projects/viceseason-undercover/cover.png',
+    logo: { src: '/projects/viceseason-undercover/logo.svg', width: 802, height: 802 },
     reel: {
       video: '/projects/viceseason-undercover/reel.mp4',
       poster: '/projects/viceseason-undercover/reel-poster.jpg',
@@ -51,6 +61,7 @@ export const PROJECTS: Project[] = [
       'Создание уникальной визуальной айдентики для личного бренда популярного видеоблогера Глеба Сайлия',
     url: 'https://saliyclothes.com',
     cover: '/projects/saliystudio/cover.png',
+    logo: { src: '/projects/saliystudio/logo.svg', width: 92, height: 38 },
     reel: {
       video: '/projects/saliystudio/reel.mp4',
       poster: '/projects/saliystudio/reel-poster.jpg',
