@@ -53,7 +53,7 @@ export const ProjectCover = ({ project }: ProjectCoverProps) => {
       {/* Dims the photo while the reel plays, so the video stands out */}
       <div
         aria-hidden='true'
-        className='pointer-events-none absolute inset-0 bg-black/50 opacity-0 transition-opacity duration-700 in-data-active:opacity-100'
+        className='project-dim pointer-events-none absolute inset-0 bg-black/50'
       />
       {/* The hover reel (.project-reel in globals.css): a video box in the middle of the cover */}
       <div

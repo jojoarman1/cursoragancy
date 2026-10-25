@@ -2,6 +2,8 @@ import type { Metadata } from 'next'
 
 import { Hero } from '@/components/elements/home/Hero'
 import { Projects } from '@/components/elements/home/Projects'
+import { Services } from '@/components/elements/home/Services'
+import { Testimonial } from '@/components/elements/home/Testimonial'
 import { SITE_CONFIG } from '@/config/site'
 
 export const metadata: Metadata = {
@@ -42,6 +44,8 @@ export default function Home() {
       />
       <Hero />
       <Projects />
+      <Testimonial />
+      <Services />
     </main>
   )
 }

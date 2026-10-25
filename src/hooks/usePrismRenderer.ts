@@ -49,6 +49,7 @@ export const usePrismRenderer = (params: UsePrismRendererParams) => {
     let frame = 0
     let hasText = false
     let hasRendered = false
+    let drawnSizeKey = ''
     let isCancelled = false
 
     const render = () => {
@@ -80,13 +81,20 @@ export const usePrismRenderer = (params: UsePrismRendererParams) => {
       // No lower clamp: zoomed out the ratio drops below 1 and the CSS size grows, so a floor of 1
       // would render many times more pixels than the screen has (25x at 20% zoom)
       const pixelRatio = Math.min(window.devicePixelRatio, MAX_PIXEL_RATIO)
+      const width = Math.floor(canvas.clientWidth * pixelRatio)
+      const height = Math.floor(canvas.clientHeight * pixelRatio)
+      const root = getComputedStyle(document.documentElement)
+      // Resizing the canvas wipes it, so a resize that changes nothing must not touch it
+      const sizeKey = `${width}x${height}@${root.fontSize}`
+      if (sizeKey === drawnSizeKey) return
+      drawnSizeKey = sizeKey
+
       // The texture matches the drawing buffer exactly, or it gets stretched and blurs the edges
-      canvas.width = Math.floor(canvas.clientWidth * pixelRatio)
-      canvas.height = Math.floor(canvas.clientHeight * pixelRatio)
+      canvas.width = width
+      canvas.height = height
       textCanvas.width = canvas.width
       textCanvas.height = canvas.height
 
-      const root = getComputedStyle(document.documentElement)
       const isMobile = window.matchMedia(PRISM_MOBILE_QUERY).matches
       const fontSize =
         Number.parseFloat(root.fontSize) *
@@ -114,7 +122,9 @@ export const usePrismRenderer = (params: UsePrismRendererParams) => {
       })
       onDrawn(textBox, textCanvas)
       hasText = true
-      requestRenderRef.current()
+      // Right away, in the same frame as the resize: a requested render would leave one frame of
+      // the wiped, empty canvas, which blinks while iOS Safari's toolbar resizes the page
+      render()
     }
 
     // Fires once right away, then on every resize

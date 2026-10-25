@@ -7,7 +7,11 @@ const TITLE_ID = 'works-title'
 
 // The "Работы" menu link points at #works
 export const Projects = () => (
-  <section id='works' aria-labelledby={TITLE_ID} className='py-[120rem] pr-6 pl-7 max-[480px]:px-4'>
+  <section
+    id='works'
+    aria-labelledby={TITLE_ID}
+    className='pt-[120rem] pr-6 pb-7 pl-7 max-[480px]:px-4'
+  >
     <h2 id={TITLE_ID} className='flex items-center gap-2 text-[22rem]'>
       <span aria-hidden='true' className='size-3.5 shrink-0 rounded-full bg-foreground/30' />
       Наши истории
