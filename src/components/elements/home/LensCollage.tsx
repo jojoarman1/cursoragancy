@@ -21,14 +21,19 @@ interface LensCollageProps {
   isActive: boolean
 }
 
-// The service collage through a lens (WebGL), coming in when shown and drifting with the pointer;
-// plain stacked images without WebGL
+// The service collage through a lens (WebGL), coming in when shown, leaving when not, and drifting
+// with the pointer; plain stacked images that fade without WebGL
 export const LensCollage = ({ art, isActive }: LensCollageProps) => {
   const lensCollage = useLensCollage({ art, isActive })
 
   if (!lensCollage.state.isSupported) {
     return (
-      <>
+      <div
+        className={clsx(
+          'absolute inset-0 transition-opacity duration-500',
+          isActive ? 'opacity-100' : 'opacity-0'
+        )}
+      >
         <Image
           src={art.background}
           alt=''
@@ -45,7 +50,7 @@ export const LensCollage = ({ art, isActive }: LensCollageProps) => {
             className='object-contain'
           />
         )}
-      </>
+      </div>
     )
   }
 

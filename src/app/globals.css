@@ -103,6 +103,21 @@
   );
   --default-transition-duration: 500ms;
   --default-transition-timing-function: var(--ease-smooth);
+
+  /* The mobile service picture floating in place: a slow bob with a slight tilt */
+  --animate-levitate: levitate 5s ease-in-out infinite;
+
+  @keyframes levitate {
+    0%,
+    100% {
+      translate: 0 0;
+      rotate: -1deg;
+    }
+    50% {
+      translate: 0 -5rem;
+      rotate: 1deg;
+    }
+  }
 }
 
 @layer base {
