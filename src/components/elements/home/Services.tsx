@@ -36,7 +36,7 @@ export const Services = () => {
             proportions). The mobile list is lower than that, so there it keeps the proportions
             itself, or the paper sheet would stretch; 104 wide leaves room for the longest title.
             With no pointer to follow on touch screens, it floats there instead */}
-        <div className='relative max-lg:order-last max-lg:aspect-[469/640] max-lg:self-center max-lg:motion-safe:animate-levitate'>
+        <div className='relative max-lg:order-last max-lg:aspect-469/640 max-lg:self-center max-lg:motion-safe:animate-levitate'>
           {SERVICES.map(service => (
             <ServiceArtwork
               key={service.id}
