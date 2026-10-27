@@ -8,6 +8,7 @@ import {
 import gsap from 'gsap'
 import { useRef } from 'react'
 
+import { CHAT_GOALS, type MetrikaGoal } from '@/config/analytics'
 import {
   PANEL_CONTENT_DURATION,
   PANEL_CONTENT_EASE,
@@ -16,9 +17,11 @@ import {
   PANEL_EXPAND_DURATION,
   PANEL_EXPAND_EASE
 } from '@/config/animation'
-import { useChatButtonIntro } from '@/hooks/useChatButtonIntro'
+import { useChatAutoOpen } from '@/hooks/useChatAutoOpen'
+import { useChatButtonFooterHide } from '@/hooks/useChatButtonFooterHide'
 import { useVisualViewportOffset } from '@/hooks/useVisualViewportOffset'
 import { CHAT_OPEN_EVENT } from '@/lib/chatEvents'
+import { reachGoal } from '@/lib/metrika'
 import { getButtonInset, getOpenInset, type MorphInset, toClipPath } from '@/lib/morphPanel'
 
 gsap.registerPlugin(useGSAP)
@@ -51,9 +54,10 @@ export const useChat = ({ onContentShow, onClosed }: UseChatParams) => {
   // Tweened as numbers: the browser shortens a zero inset() string, which breaks
   // GSAP's string interpolation and squares the corners
   const insetRef = useRef<MorphInset>({ top: 0, right: 0, bottom: 0, left: 0, radius: 0 })
+  const hasOpenedRef = useRef(false)
 
-  useChatButtonIntro({ buttonRef })
   useVisualViewportOffset({ targetRef: panelRef, isEnabled: panelDisclosure.opened })
+  const footerHide = useChatButtonFooterHide({ buttonRef, isOpen: panelDisclosure.opened })
 
   const { contextSafe } = useGSAP({ scope: rootRef })
 
@@ -73,12 +77,14 @@ export const useChat = ({ onContentShow, onClosed }: UseChatParams) => {
     if (reduceMotion) timeline.progress(1)
   })
 
-  const open = contextSafe(() => {
+  const openPanel = contextSafe((goal: MetrikaGoal) => {
     const panel = panelRef.current
     const button = buttonRef.current
     if (!panel || !button) return
 
     panelDisclosure.open()
+    hasOpenedRef.current = true
+    reachGoal(goal)
 
     // The panel size may have changed while it was hidden
     if (gsap.getProperty(panel, 'visibility') === 'hidden') {
@@ -117,6 +123,15 @@ export const useChat = ({ onContentShow, onClosed }: UseChatParams) => {
     )
   })
 
+  const open = () => openPanel(CHAT_GOALS.open)
+
+  // Someone who already opened the chat themselves isn't pushed into it again
+  useChatAutoOpen({
+    onReachEnd: () => {
+      if (!hasOpenedRef.current) openPanel(CHAT_GOALS.autoOpen)
+    }
+  })
+
   const close = contextSafe(() => {
     const panel = panelRef.current
     const button = buttonRef.current
@@ -150,7 +165,7 @@ export const useChat = ({ onContentShow, onClosed }: UseChatParams) => {
           '<'
         )
         .set(panel, { autoAlpha: 0 })
-        .set(button, { autoAlpha: 1 })
+        .set(button, { autoAlpha: footerHide.state.latestIsFooterInView.ref.current ? 0 : 1 })
         .fromTo(
           button.querySelector(LABEL_SELECTOR),
           { yPercent: 110 },

@@ -6,34 +6,12 @@ import { Hero } from '@/components/elements/home/Hero'
 import { Projects } from '@/components/elements/home/Projects'
 import { Services } from '@/components/elements/home/Services'
 import { Testimonial } from '@/components/elements/home/Testimonial'
-import { SITE_CONFIG } from '@/config/site'
+import { HOME_JSON_LD } from '@/lib/structuredData'
 
 export const metadata: Metadata = {
   alternates: {
     canonical: '/'
   }
-}
-
-const JSON_LD = {
-  '@context': 'https://schema.org',
-  '@graph': [
-    {
-      '@type': 'Organization',
-      '@id': `${SITE_CONFIG.url}/#organization`,
-      name: SITE_CONFIG.name,
-      url: SITE_CONFIG.url,
-      logo: `${SITE_CONFIG.url}/web-app-manifest-512x512.png`,
-      description: SITE_CONFIG.description
-    },
-    {
-      '@type': 'WebSite',
-      '@id': `${SITE_CONFIG.url}/#website`,
-      name: SITE_CONFIG.name,
-      url: SITE_CONFIG.url,
-      inLanguage: SITE_CONFIG.lang,
-      publisher: { '@id': `${SITE_CONFIG.url}/#organization` }
-    }
-  ]
 }
 
 export default function Home() {
@@ -42,7 +20,7 @@ export default function Home() {
       <script
         type='application/ld+json'
         // biome-ignore lint/security/noDangerouslySetInnerHtml: static JSON-LD, `<` is escaped
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(JSON_LD).replace(/</g, '\\u003c') }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(HOME_JSON_LD).replace(/</g, '\\u003c') }}
       />
       <Hero />
       <Projects />

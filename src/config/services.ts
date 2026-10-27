@@ -14,15 +14,15 @@ export interface Service {
   art: ServiceArt
 }
 
-const PAPER_SHEET: ServiceArt = { background: '/services/paper.png', isSheet: true }
+const PAPER_SHEET: ServiceArt = { background: '/services/paper.webp', isSheet: true }
 
 export const SERVICES = [
   {
     id: 'brand-strategy',
     title: 'Стратегия бренда',
     art: {
-      background: '/services/brand-strategy/background.png',
-      foreground: '/services/brand-strategy/foreground.png'
+      background: '/services/brand-strategy/background.webp',
+      foreground: '/services/brand-strategy/foreground.webp'
     }
   },
   { id: 'growth-strategy', title: 'Стратегия развития', art: PAPER_SHEET },

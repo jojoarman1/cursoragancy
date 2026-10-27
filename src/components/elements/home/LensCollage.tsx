@@ -7,8 +7,7 @@ import { LENS_IMAGE_SIZES, LENS_OVERFLOW } from '@/config/lens'
 import type { ServiceArt } from '@/config/services'
 import { useLensCollage } from '@/hooks/useLensCollage'
 
-// Reaches past the column by LENS_OVERFLOW on every side. The size is explicit: left + right don't
-// stretch a canvas, it would take its buffer size (2x on retina)
+// Explicit size: left + right don't stretch a canvas
 const CANVAS_STYLE = {
   left: `${-LENS_OVERFLOW.x * 100}%`,
   top: `${-LENS_OVERFLOW.y * 100}%`,
@@ -21,8 +20,6 @@ interface LensCollageProps {
   isActive: boolean
 }
 
-// The service collage through a lens (WebGL), coming in when shown, leaving when not, and drifting
-// with the pointer; plain stacked images that fade without WebGL
 export const LensCollage = ({ art, isActive }: LensCollageProps) => {
   const lensCollage = useLensCollage({ art, isActive })
 

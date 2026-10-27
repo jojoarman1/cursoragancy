@@ -63,13 +63,14 @@ export const ChatCurrentStep = ({ step, chatForm }: ChatCurrentStepProps) => {
       >
         [Enter]
       </button>
+      {/* empty:ml-px keeps Chrome from collapsing the space before it */}
       {/* biome-ignore lint/a11y/useSemanticElements: an input can't wrap inline with the sentence */}
       <span
         ref={chatForm.refs.inputRef}
         role='textbox'
         aria-label={step.label}
         aria-multiline={step.isMultiline}
-        aria-invalid={chatForm.state.isEmailError}
+        aria-invalid={chatForm.state.isContactError}
         contentEditable='plaintext-only'
         inputMode={step.inputMode}
         enterKeyHint={step.isMultiline ? 'enter' : 'next'}
@@ -79,11 +80,11 @@ export const ChatCurrentStep = ({ step, chatForm }: ChatCurrentStepProps) => {
         data-chat-control
         onKeyDown={chatForm.functions.onInputKeyDown}
         onInput={chatForm.functions.onInput}
-        className='invisible mr-[6px] break-all pr-[5px] outline-none aria-invalid:rounded-[4px] aria-invalid:border aria-invalid:border-dashed aria-invalid:border-red-500 aria-invalid:px-[4px] aria-multiline:block aria-multiline:whitespace-pre-wrap'
+        className='invisible mr-[6px] break-all pr-[5px] outline-none empty:ml-px aria-invalid:rounded-[4px] aria-invalid:border aria-invalid:border-dashed aria-invalid:border-red-500 aria-invalid:px-[4px] aria-multiline:block aria-multiline:whitespace-pre-wrap'
       />
-      {chatForm.state.isEmailError ? (
+      {chatForm.state.isContactError ? (
         <span role='alert' className='block text-[14px] text-red-500'>
-          Неверный email
+          Укажите почту или ник в Telegram
         </span>
       ) : null}
     </>

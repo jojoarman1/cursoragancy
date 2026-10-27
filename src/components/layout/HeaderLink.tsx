@@ -1,5 +1,6 @@
 'use client'
 
+import clsx from 'clsx'
 import Link from 'next/link'
 import { type ComponentProps, type ReactNode, useRef } from 'react'
 
@@ -15,7 +16,7 @@ interface HeaderLinkProps extends Omit<ComponentProps<typeof Link>, 'children' |
 }
 
 // A header text link with the same hover as the tile buttons: the label rolls, the icon flies
-export const HeaderLink = ({ href, label, icon, ...props }: HeaderLinkProps) => {
+export const HeaderLink = ({ href, label, icon, className, ...props }: HeaderLinkProps) => {
   const linkRef = useRef<HTMLAnchorElement>(null)
   useIconFly({ targetRef: linkRef })
 
@@ -25,7 +26,10 @@ export const HeaderLink = ({ href, label, icon, ...props }: HeaderLinkProps) => 
       href={href}
       onClick={event => handleSectionLinkClick(event, href)}
       aria-label={label}
-      className='group pointer-events-auto flex items-center gap-1'
+      className={clsx(
+        'group pointer-events-auto flex items-center gap-[calc(4*var(--text-unit))]',
+        className
+      )}
       {...props}
     >
       <RollingLabel label={label} />

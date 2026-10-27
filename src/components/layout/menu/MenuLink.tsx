@@ -17,7 +17,7 @@ export const MenuLink = ({ link, onClick }: MenuLinkProps) => (
       onClick()
       handleSectionLinkClick(event, link.href)
     }}
-    className='block py-2.5 text-[44rem] leading-none font-bold tracking-[-0.03em]'
+    className='block py-[calc(10*var(--text-unit))] text-[calc(44*var(--text-unit))] leading-none font-bold tracking-[-0.03em]'
   >
     {link.label}
   </Link>

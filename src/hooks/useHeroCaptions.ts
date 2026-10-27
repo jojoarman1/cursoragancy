@@ -44,6 +44,8 @@ export const useHeroCaptions = ({ isVisible }: UseHeroCaptionsParams) => {
       SplitText.create(slogan, {
         type: 'lines,words',
         mask: 'lines',
+        // Whole words read fine as they are; aria-label isn't allowed on the span inside the h1
+        aria: 'none',
         autoSplit: true,
         onSplit: split => gsap.fromTo(split.words, { yPercent: reduceMotion ? 0 : 100 }, reveal)
       })

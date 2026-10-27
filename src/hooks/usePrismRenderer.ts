@@ -93,8 +93,9 @@ export const usePrismRenderer = (params: UsePrismRendererParams) => {
       textCanvas.height = canvas.height
 
       const isMobile = window.matchMedia(PRISM_MOBILE_QUERY).matches
+      // Text stops growing past the artboard (--text-unit), like the page's other text
       const fontSize =
-        Number.parseFloat(root.fontSize) *
+        Math.min(Number.parseFloat(root.fontSize), 1) *
         pixelRatio *
         (isMobile ? PRISM_FONT_SIZES.mobile : PRISM_FONT_SIZES.desktop)
       const textBox = drawPrismText({

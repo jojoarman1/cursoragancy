@@ -15,7 +15,7 @@ import { MENU_PANEL_ID, MenuPanel } from './menu/MenuPanel'
 import { TileButton } from './TileButton'
 
 const BAR_CLASS_NAME =
-  'pointer-events-none fixed top-0 z-40 flex h-23 items-center px-6 max-lg:h-auto max-lg:py-2.5'
+  'pointer-events-none fixed top-0 z-40 flex h-[calc(92*var(--text-unit))] items-center px-[calc(28*var(--text-unit))] max-lg:h-auto max-lg:py-[calc(10*var(--text-unit))]'
 
 export const Header = () => {
   const menu = useMenu()
@@ -34,7 +34,7 @@ export const Header = () => {
           href='/'
           onClick={event => handleSectionLinkClick(event, '/')}
           className={clsx(
-            'text-[26rem] leading-none font-bold tracking-tighter transition-[opacity,visibility]',
+            'text-[calc(26*var(--text-unit))] leading-none font-bold tracking-tighter transition-[opacity,visibility]',
             isLogoHidden ? 'invisible opacity-0' : 'pointer-events-auto'
           )}
         >
@@ -48,7 +48,9 @@ export const Header = () => {
         <TileButton
           ref={menu.refs.buttonRef}
           label='Меню'
-          icon={<MenuIcon className='h-2.5 w-3.75' />}
+          icon={
+            <MenuIcon className='h-[calc(10*var(--text-unit))] w-[calc(15*var(--text-unit))]' />
+          }
           aria-controls={MENU_PANEL_ID}
           aria-expanded={menu.state.isOpen}
           onClick={menu.functions.open}

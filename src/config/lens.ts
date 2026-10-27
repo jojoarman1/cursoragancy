@@ -30,6 +30,4 @@ export const LENS_ENTRANCE = {
   cutoutDelay: 0.25
 }
 
-// The collage leaving when another service is picked: the cut-out drops and the paper shrinks back
-// into its middle, speeding up as it goes; the next collage comes in once it is gone
 export const LENS_EXIT = { duration: 0.55, ease: 'power3.in' }

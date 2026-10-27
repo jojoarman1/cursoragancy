@@ -9,9 +9,6 @@ import { ServiceOption } from './ServiceOption'
 
 const TITLE_ID = 'services-title'
 
-// Full screen (from 1024px up): clicking a service makes it white and shows its picture on the
-// left. The mobile layout is a plain block with a small picture right of the list. The "Сервис"
-// menu link points at #services
 export const Services = () => {
   const serviceSwitch = useServiceSwitch()
 
@@ -19,23 +16,21 @@ export const Services = () => {
     <section
       id='services'
       aria-labelledby={TITLE_ID}
-      // The collage canvas reaches past its column; on mobile the column is at the screen's edge
-      className='flex h-svh flex-col justify-center bg-foreground pr-6 pl-21.5 text-background max-lg:h-auto max-lg:overflow-x-clip max-lg:px-4 max-lg:pt-12.5 max-lg:pb-10'
+      // The collage canvas overflows its column, which touches the screen edge on mobile
+      className='flex h-svh flex-col justify-center bg-foreground pr-7 pl-21.5 text-background max-lg:h-auto max-lg:overflow-x-clip max-lg:px-4 max-lg:pt-12.5 max-lg:pb-10'
     >
       {/* Lines up with the list, past the photo column */}
       <SectionLabel
         id={TITLE_ID}
-        className='ml-141.75 text-[20rem] max-lg:ml-0'
+        className='ml-141.75 text-[calc(20*var(--text-unit))] max-lg:ml-0'
         dotClassName='bg-background/60'
       >
         Чем мы вам сможем помочь?
       </SectionLabel>
 
       <div className='mt-31.5 grid grid-cols-[469rem_1fr] gap-x-24.5 max-lg:mt-6 max-lg:grid-cols-[1fr_104rem] max-lg:gap-x-4'>
-        {/* As tall as the list: the grid row stretches it (the list is 640 tall, the column's
-            proportions). The mobile list is lower than that, so there it keeps the proportions
-            itself, or the paper sheet would stretch; 104 wide leaves room for the longest title.
-            With no pointer to follow on touch screens, it floats there instead */}
+        {/* On mobile the list is lower than the column's proportions, so the column keeps its own,
+            or the paper sheet would stretch */}
         <div className='relative max-lg:order-last max-lg:aspect-469/640 max-lg:self-center max-lg:motion-safe:animate-levitate'>
           {SERVICES.map(service => (
             <ServiceArtwork
@@ -46,7 +41,7 @@ export const Services = () => {
           ))}
         </div>
 
-        <ul className='text-[122rem] leading-[1.05] font-bold tracking-[-0.03em] max-lg:text-[32rem]'>
+        <ul className='text-[calc(122*var(--text-unit))] leading-[1.05] font-bold tracking-[-0.03em] max-lg:text-[calc(32*var(--text-unit))]'>
           {SERVICES.map(service => (
             <ServiceOption
               key={service.id}

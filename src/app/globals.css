@@ -8,6 +8,7 @@
   --faq: #202020;
   --accent: #176308;
   --signal: #ff4a1c;
+  --silver: #b2b2b2;
 }
 
 @theme inline {
@@ -17,6 +18,7 @@
   --color-faq: var(--faq);
   --color-accent: var(--accent);
   --color-signal: var(--signal);
+  --color-silver: var(--silver);
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-ibm-plex-mono), ui-monospace, monospace;
 }
@@ -26,23 +28,25 @@
  * Tailwind scale is redefined in artboard pixels. Classes keep their usual meaning:
  * p-4 is 16px, text-sm is 14px — at the artboard size, scaled on other screens.
  * Breakpoints stay in rem: media queries ignore the html font-size.
+ * Text sizes use --text-unit instead: like bymonolog.com, the layout keeps growing with the
+ * screen, but text stops at the artboard size.
  */
 @theme {
   --spacing: 4rem;
 
-  --text-xs: max(12px, 12rem);
-  --text-sm: max(12px, 14rem);
-  --text-base: max(12px, 16rem);
-  --text-lg: 18rem;
-  --text-xl: 20rem;
-  --text-2xl: 24rem;
-  --text-3xl: 30rem;
-  --text-4xl: 36rem;
-  --text-5xl: 48rem;
-  --text-6xl: 60rem;
-  --text-7xl: 72rem;
-  --text-8xl: 96rem;
-  --text-9xl: 128rem;
+  --text-xs: max(12px, calc(12 * var(--text-unit)));
+  --text-sm: max(12px, calc(14 * var(--text-unit)));
+  --text-base: max(12px, calc(16 * var(--text-unit)));
+  --text-lg: calc(18 * var(--text-unit));
+  --text-xl: calc(20 * var(--text-unit));
+  --text-2xl: calc(24 * var(--text-unit));
+  --text-3xl: calc(30 * var(--text-unit));
+  --text-4xl: calc(36 * var(--text-unit));
+  --text-5xl: calc(48 * var(--text-unit));
+  --text-6xl: calc(60 * var(--text-unit));
+  --text-7xl: calc(72 * var(--text-unit));
+  --text-8xl: calc(96 * var(--text-unit));
+  --text-9xl: calc(128 * var(--text-unit));
 
   --radius: 4rem;
   --radius-xs: 2rem;
@@ -118,6 +122,15 @@
       rotate: 1deg;
     }
   }
+
+  /* The cookie banner sliding in from past the right edge, a beat after the page appears */
+  --animate-slide-in-right: slide-in-right 0.9s var(--ease-expo-out) 0.8s both;
+
+  @keyframes slide-in-right {
+    from {
+      translate: calc(100% + 48rem) 0;
+    }
+  }
 }
 
 @layer base {
@@ -134,6 +147,10 @@
 
   html {
     touch-action: pan-x pan-y;
+  }
+
+  :root {
+    --text-unit: min(1rem, 1px);
   }
 
   ::selection {
@@ -154,6 +171,8 @@
 
   body {
     @apply bg-background text-base text-foreground font-sans;
+    letter-spacing: -0.01em;
+    line-height: 1.25;
     text-rendering: optimizeLegibility;
   }
 }

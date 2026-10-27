@@ -1,7 +1,7 @@
 export const TILE_VARIANTS = ['dark', 'light', 'accent', 'difference'] as const
 export type TileVariant = (typeof TILE_VARIANTS)[number]
 
-export const TILE_SIZES = ['md', 'lg'] as const
+export const TILE_SIZES = ['md', 'lg', 'xl'] as const
 export type TileSize = (typeof TILE_SIZES)[number]
 
 // Pressing squeezes the tile quickly; letting go springs it back with a small overshoot. Uses the
@@ -9,15 +9,19 @@ export type TileSize = (typeof TILE_SIZES)[number]
 export const TILE_CLASS_NAME =
   'transition-[scale] duration-600 ease-spring active:scale-[0.94] active:duration-100 active:ease-out flex cursor-pointer items-center focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current'
 
-// md is the header / chat button; lg the bigger call to action
+// md is the header / chat button; lg and xl the bigger calls to action
 export const TILE_SIZE_CLASS_NAMES: Record<TileSize, { root: string; tile: string }> = {
   md: {
-    root: 'gap-2 rounded-[2.4rem] py-[4.5rem] pr-[4.5rem] pl-2 text-[20rem] leading-5 tracking-[-0.2rem]',
-    tile: 'size-6 rounded-[2.4rem]'
+    root: 'gap-[calc(8*var(--text-unit))] rounded-[calc(2.4*var(--text-unit))] py-[calc(4.5*var(--text-unit))] pr-[calc(4.5*var(--text-unit))] pl-[calc(8*var(--text-unit))] text-[calc(20*var(--text-unit))] leading-[calc(20*var(--text-unit))] tracking-[calc(-0.2*var(--text-unit))]',
+    tile: 'size-[calc(24*var(--text-unit))] rounded-[calc(2.4*var(--text-unit))]'
   },
   lg: {
-    root: 'gap-3 rounded-[3.2rem] py-1.5 pr-1.5 pl-3 text-[28rem] leading-7 tracking-[-0.28rem]',
-    tile: 'size-9 rounded-[3.2rem]'
+    root: 'gap-[calc(12*var(--text-unit))] rounded-[calc(3.2*var(--text-unit))] py-[calc(6*var(--text-unit))] pr-[calc(6*var(--text-unit))] pl-[calc(12*var(--text-unit))] text-[calc(28*var(--text-unit))] leading-[calc(28*var(--text-unit))] tracking-[calc(-0.28*var(--text-unit))]',
+    tile: 'size-[calc(36*var(--text-unit))] rounded-[calc(3.2*var(--text-unit))]'
+  },
+  xl: {
+    root: 'gap-[calc(16*var(--text-unit))] rounded-[calc(4.4*var(--text-unit))] py-[calc(8*var(--text-unit))] pr-[calc(8*var(--text-unit))] pl-[calc(16*var(--text-unit))] text-[calc(40*var(--text-unit))] leading-[calc(40*var(--text-unit))] tracking-[calc(-0.4*var(--text-unit))]',
+    tile: 'size-[calc(52*var(--text-unit))] rounded-[calc(4.4*var(--text-unit))]'
   }
 }
 

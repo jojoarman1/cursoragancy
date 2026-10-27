@@ -1,8 +1,8 @@
 import type { Metadata, Viewport } from 'next'
 import { Geist, IBM_Plex_Mono } from 'next/font/google'
 
+import { CookieConsent } from '@/components/layout/CookieConsent'
 import { GrainOverlay } from '@/components/layout/GrainOverlay'
-import { YandexMetrika } from '@/components/layout/YandexMetrika'
 import { SITE_CONFIG } from '@/config/site'
 
 import './globals.css'
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_CONFIG.url),
   title: {
     default: SITE_CONFIG.title,
-    template: `%s — ${SITE_CONFIG.name}`
+    template: `%s - ${SITE_CONFIG.name}`
   },
   description: SITE_CONFIG.description,
   applicationName: SITE_CONFIG.name,
@@ -69,7 +69,7 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
       <body className='min-h-full flex flex-col'>
         {children}
         <GrainOverlay />
-        <YandexMetrika />
+        <CookieConsent />
       </body>
     </html>
   )

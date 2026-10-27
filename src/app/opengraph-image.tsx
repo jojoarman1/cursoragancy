@@ -8,10 +8,9 @@ export const alt = SITE_CONFIG.title
 export const size = { width: 1200, height: 630 }
 export const contentType = 'image/png'
 
-// The site's Geist, read from disk: next/og's default font has no Cyrillic for the tagline
+// next/og's default font has no Cyrillic
 const loadFont = (file: string) => readFile(join(process.cwd(), 'assets/fonts', file))
 
-// The favicon's look on a wide card: the light wordmark on the logo's dark tile
 export default async function OpengraphImage() {
   const [bold, regular] = await Promise.all([
     loadFont('Geist-Bold.ttf'),

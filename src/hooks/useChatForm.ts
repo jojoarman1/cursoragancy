@@ -5,20 +5,25 @@ import {
   useEventListener,
   useLatest,
   useMediaQuery,
+  useMutation,
   usePreferredReducedMotion,
   useResizeObserver
 } from '@siberiacancode/reactuse'
 import gsap from 'gsap'
 import { type KeyboardEvent, useRef, useState } from 'react'
 
+import { CHAT_GOALS, getChatAnswerGoal } from '@/config/analytics'
 import {
-  CHAT_EMAIL_PATTERN,
   CHAT_FIRST_STEP_ID,
   CHAT_STEPS,
   type ChatOption,
-  getChatThanks
+  getChatMaxLength,
+  getChatThanks,
+  isChatContact
 } from '@/config/chat'
-import { SITE_CONFIG } from '@/config/site'
+import { sendLead } from '@/lib/lead.api'
+import type { LeadAnswer } from '@/lib/lead.schema'
+import { reachGoal } from '@/lib/metrika'
 
 gsap.registerPlugin(useGSAP)
 
@@ -46,20 +51,6 @@ const getHiddenElements = (form: HTMLElement | null, selector: string) =>
   Array.from(form?.querySelectorAll<HTMLElement>(selector) ?? []).filter(
     element => getComputedStyle(element).visibility === 'hidden'
   )
-
-interface ChatAnswer {
-  stepId: string
-  values: string[]
-}
-
-const getMailtoHref = (answers: ChatAnswer[]) => {
-  const subject = answers.find(answer => answer.stepId === 'subject')?.values[0] ?? ''
-  const body = answers
-    .map(answer => `${CHAT_STEPS[answer.stepId].label}: ${answer.values.join(', ')}`)
-    .join('\n')
-
-  return `mailto:${SITE_CONFIG.email}?subject=${encodeURIComponent(`Заявка с сайта: ${subject}`)}&body=${encodeURIComponent(body)}`
-}
 
 // Every character takes its place up front, so words don't jump to the next line mid-typing
 const getHiddenChars = (title: HTMLElement, text: string) => {
@@ -90,13 +81,15 @@ const focusAtEnd = (element: HTMLElement) => {
 export const useChatForm = () => {
   const reduceMotion = usePreferredReducedMotion() === 'reduce'
   const isTouch = useMediaQuery(TOUCH_QUERY)
-  const [answers, setAnswers] = useState<ChatAnswer[]>([])
+  const [answers, setAnswers] = useState<LeadAnswer[]>([])
   const [stepId, setStepId] = useState<string | null>(CHAT_FIRST_STEP_ID)
   const [selected, setSelected] = useState<string[]>([])
-  const [isEmailError, toggleEmailError] = useBoolean()
+  const [isContactError, toggleContactError] = useBoolean()
   const [isSent, toggleSent] = useBoolean()
+  const [isConsentGiven, toggleConsent] = useBoolean()
   // onClosed may run from a closure created before sending (the auto-close after the thanks)
   const latestIsSent = useLatest(isSent)
+  const leadMutation = useMutation(sendLead)
 
   const formRef = useRef<HTMLDivElement>(null)
   const bodyRef = useRef<HTMLDivElement>(null)
@@ -111,7 +104,7 @@ export const useChatForm = () => {
 
   const step = stepId ? CHAT_STEPS[stepId] : null
   const name = answers[0]?.values[0] ?? ''
-  const canSend = !isSent && !step
+  const canSend = !isSent && !step && isConsentGiven && !leadMutation.isLoading
 
   const { contextSafe } = useGSAP({ scope: formRef })
 
@@ -198,17 +191,19 @@ export const useChatForm = () => {
     if (!stepId || !step) return
 
     setAnswers(prevAnswers => [...prevAnswers, { stepId, values }])
+    // Only picked options go to Metrika: typed answers are names and contacts
+    reachGoal(getChatAnswerGoal(stepId), step.options ? { [stepId]: values.join(', ') } : undefined)
     setStepId(next ?? step.next ?? null)
     setSelected([])
-    toggleEmailError(false)
+    toggleContactError(false)
   }
 
   const submitInput = () => {
     const value = inputRef.current?.innerText.trim()
     if (!step || !value) return
 
-    if (step.inputMode === 'email' && !CHAT_EMAIL_PATTERN.test(value)) {
-      toggleEmailError(true)
+    if (step.isContact && !isChatContact(value)) {
+      toggleContactError(true)
       return
     }
 
@@ -247,7 +242,16 @@ export const useChatForm = () => {
   })
 
   const onInput = () => {
-    if (isEmailError) toggleEmailError(false)
+    if (isContactError) toggleContactError(false)
+
+    // contentEditable has no maxlength
+    const input = inputRef.current
+    if (!input || !step) return
+    const maxLength = getChatMaxLength(step)
+    if (input.innerText.length <= maxLength) return
+
+    input.textContent = input.innerText.slice(0, maxLength)
+    focusAtEnd(input)
   }
 
   const selectOption = (option: ChatOption) => {
@@ -276,13 +280,10 @@ export const useChatForm = () => {
     setAnswers(prevAnswers => prevAnswers.slice(0, index))
     setStepId(answer.stepId)
     setSelected(answerStep.isMultiselect ? answer.values : [])
-    toggleEmailError(false)
+    toggleContactError(false)
   }
 
-  const send = contextSafe((onThanksRead: () => void) => {
-    if (!canSend) return
-
-    window.location.href = getMailtoHref(answers)
+  const showThanks = contextSafe((onThanksRead: () => void) => {
     toggleSent(true)
 
     timelineRef.current?.kill()
@@ -292,6 +293,20 @@ export const useChatForm = () => {
       .to(thanksRef.current, { autoAlpha: 1, duration: THANKS_DURATION, ease: THANKS_EASE })
       .add(onThanksRead, `+=${THANKS_HOLD}`)
   })
+
+  const send = async (onThanksRead: () => void) => {
+    if (!canSend) return
+
+    reachGoal(CHAT_GOALS.send)
+    try {
+      await leadMutation.mutateAsync({ answers, consent: true })
+    } catch {
+      reachGoal(CHAT_GOALS.sendError)
+      return
+    }
+    reachGoal(CHAT_GOALS.sent)
+    showThanks(onThanksRead)
+  }
 
   const onClosed = contextSafe(() => {
     // Also stops a pending auto-close after sending when the chat was closed by hand
@@ -303,6 +318,7 @@ export const useChatForm = () => {
     setStepId(CHAT_FIRST_STEP_ID)
     setSelected([])
     toggleSent(false)
+    toggleConsent(false)
     gsap.set(bodyRef.current, { autoAlpha: 1 })
     gsap.set(thanksRef.current, { autoAlpha: 0 })
   })
@@ -313,8 +329,11 @@ export const useChatForm = () => {
       step,
       stepId,
       selected,
-      isEmailError,
+      isContactError,
       canSend,
+      isSending: leadMutation.isLoading,
+      isSendError: leadMutation.isError && !step,
+      isConsentGiven,
       thanks: getChatThanks(name)
     },
     refs: { formRef, bodyRef, thanksRef, inputRef, sendRef },
@@ -327,7 +346,8 @@ export const useChatForm = () => {
       selectOption,
       applySelection,
       editAnswer,
-      send
+      send,
+      toggleConsent
     }
   }
 }

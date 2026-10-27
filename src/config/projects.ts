@@ -1,7 +1,7 @@
 // High enough that the shots keep their texture after compression; listed in next.config images
 export const COVER_IMAGE_QUALITY = 90
-// The cover box (875×576 in the design) and the reel's share of its width before it grows
-export const COVER_ASPECT_RATIO = 875 / 576
+// The cover box (905×660, like bymonolog.com) and the reel's share of its width before it grows
+export const COVER_ASPECT_RATIO = 905 / 660
 export const REEL_WIDTH_SHARE = 0.45
 
 export interface ProjectMetric {
@@ -43,7 +43,7 @@ export const PROJECTS: Project[] = [
     slug: 'viceseason-undercover',
     title: 'Viceseason Undercover',
     description:
-      'Комплексная разработка нового сайта для VICESEASON UNDERCOVER — авангардного белорусского бренда уличной одежды. Создали полноценную e-commerce платформу с собственной серверной частью, административной панелью, CRM-системой, складским учётом и интеграцией онлайн-оплаты.',
+      'Комплексная разработка нового сайта для VICESEASON UNDERCOVER - авангардного белорусского бренда уличной одежды. Создали полноценную e-commerce платформу с собственной серверной частью, административной панелью, CRM-системой, складским учётом и интеграцией онлайн-оплаты.',
     url: 'https://viceseason.com',
     metric: { value: '42%', label: 'Увеличение кол-ва клиентов и продаж' },
     cover: '/projects/viceseason-undercover/cover.png',

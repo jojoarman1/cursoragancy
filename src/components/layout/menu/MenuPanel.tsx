@@ -21,21 +21,24 @@ export const MenuPanel = ({ menu }: MenuPanelProps) => (
     ref={menu.refs.panelRef}
     id={MENU_PANEL_ID}
     aria-label='Меню'
-    className='invisible fixed top-2.5 right-6 left-14.75 z-50 rounded-[2.4rem]'
+    className='invisible fixed top-[calc(10*var(--text-unit))] right-[calc(24*var(--text-unit))] left-[calc(59*var(--text-unit))] z-50 rounded-[calc(2.4*var(--text-unit))]'
   >
     <div
       ref={menu.refs.clipRef}
       className='relative bg-foreground text-background selection:bg-background selection:text-foreground'
     >
-      <div ref={menu.refs.contentRef} className='invisible relative px-4 pt-14 pb-6.5'>
-        <MenuReveal className='absolute top-3 right-3.5'>
+      <div
+        ref={menu.refs.contentRef}
+        className='invisible relative px-[calc(16*var(--text-unit))] pt-[calc(56*var(--text-unit))] pb-[calc(26*var(--text-unit))]'
+      >
+        <MenuReveal className='absolute top-[calc(12*var(--text-unit))] right-[calc(14*var(--text-unit))]'>
           <TileButton
             label='Закрыть'
-            icon={<CloseIcon className='size-3' />}
+            icon={<CloseIcon className='size-[calc(12*var(--text-unit))]' />}
             variant='light'
             onClick={menu.functions.close}
             tileClassName='hidden'
-            className='pr-2'
+            className='pr-[calc(8*var(--text-unit))]'
           />
         </MenuReveal>
 

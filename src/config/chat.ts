@@ -13,6 +13,7 @@ export interface ChatStep {
   isMultiline?: boolean
   isMultiselect?: boolean
   inputMode?: 'text' | 'email'
+  isContact?: boolean
   options?: ChatOption[]
 }
 
@@ -55,7 +56,7 @@ export const CHAT_STEPS: Record<string, ChatStep> = {
   projectDeadline: {
     text: ', и он должен быть завершен',
     label: 'Сроки',
-    next: 'email',
+    next: 'contact',
     options: [
       { value: 'как можно скорее' },
       { value: 'за 3 месяца' },
@@ -89,25 +90,40 @@ export const CHAT_STEPS: Record<string, ChatStep> = {
   about: {
     text: 'Немного обо мне:',
     label: 'О себе',
-    next: 'email',
+    next: 'contact',
     isNewParagraph: true,
     isMultiline: true
   },
   something: {
     text: 'Если коротко, речь пойдет о',
     label: 'Сообщение',
-    next: 'email',
+    next: 'contact',
     isNewParagraph: true,
     isMultiline: true
   },
-  email: {
-    text: 'Вы можете связаться со мной через почту',
-    label: 'Почта',
+  contact: {
+    text: 'Вы можете связаться со мной через почту или телеграм',
+    label: 'Почта или Telegram',
     isNewParagraph: true,
-    inputMode: 'email'
+    // The email keyboard has @ for a Telegram username too
+    inputMode: 'email',
+    isContact: true
   }
 }
 
-export const CHAT_EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
+// @username, username or a t.me link; 4-character usernames exist too (sold on Fragment)
+const TELEGRAM_PATTERN = /^(?:@|(?:https?:\/\/)?t\.me\/)?[a-z][a-z0-9_]{3,31}$/i
+
+export const isChatContact = (value: string) =>
+  EMAIL_PATTERN.test(value) || TELEGRAM_PATTERN.test(value)
+
+// An email is at most 254 characters
+const CHAT_MAX_LENGTH = { line: 100, contact: 254, multiline: 2000 }
+
+export const getChatMaxLength = (step: ChatStep) => {
+  if (step.isContact) return CHAT_MAX_LENGTH.contact
+  return step.isMultiline ? CHAT_MAX_LENGTH.multiline : CHAT_MAX_LENGTH.line
+}
 
 export const getChatThanks = (name: string) => `Спасибо, ${name}! Скоро свяжемся!`

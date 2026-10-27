@@ -71,7 +71,7 @@ export const FaqEntry = ({ item, isOpen, onToggle }: FaqEntryProps) => {
         <div className='overflow-hidden'>
           <p
             className={clsx(
-              'max-w-225 px-4.5 pt-4 pb-6 text-[20rem] leading-[1.4] text-background/60 transition-[translate,opacity,filter] max-lg:text-lg',
+              'max-w-225 px-4.5 pt-4 pb-6 text-[calc(20*var(--text-unit))] leading-[1.4] text-background/60 transition-[translate,opacity,filter] max-lg:text-lg',
               EASE_CLASS_NAME,
               isOpen
                 ? 'translate-y-0 opacity-100 blur-none delay-150 duration-800'

@@ -4,6 +4,7 @@ const nextConfig: NextConfig = {
   // The server gets a self-contained build (server.js + traced node_modules): it only needs Node,
   // no bun install there
   output: 'standalone',
+  poweredByHeader: false,
   reactCompiler: true,
   images: {
     // AVIF keeps photo detail at a smaller size; WebP is the fallback

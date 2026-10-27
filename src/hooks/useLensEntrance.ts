@@ -11,14 +11,10 @@ gsap.registerPlugin(useGSAP)
 export interface UseLensEntranceParams {
   viewRef: RefObject<LensView>
   redraw: () => void
-  // Comes in every time this turns true (the service is shown and on screen), leaves when it turns
-  // false
   isPlaying: boolean
 }
 
-// The paper grows smoothly out of its own middle, then the cut-out rises from below; leaving runs
-// it backwards. Both tween from wherever the view is, so a switch halfway through never jumps:
-// that is also why the context isn't reverted on update (reverting snaps the view back to 0)
+// Not reverted on update: that would snap the paper back to 0 mid-switch
 export const useLensEntrance = ({ viewRef, redraw, isPlaying }: UseLensEntranceParams) => {
   const reduceMotion = usePreferredReducedMotion() === 'reduce'
 

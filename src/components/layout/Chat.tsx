@@ -8,13 +8,14 @@ import { SITE_CONFIG } from '@/config/site'
 import { useChat } from '@/hooks/useChat'
 import { useChatForm } from '@/hooks/useChatForm'
 
+import { ChatConsent } from './chat/ChatConsent'
 import { ChatConversation } from './chat/ChatConversation'
 import { TileButton } from './TileButton'
 
 const PANEL_ID = 'chat-panel'
 
 const ICON_TILE_CLASS_NAME =
-  'flex size-6 items-center justify-center rounded-[2.4rem] bg-background/30 text-background'
+  'flex size-[calc(24*var(--text-unit))] items-center justify-center rounded-[calc(2.4*var(--text-unit))] bg-background/30 text-background'
 
 export const Chat = () => {
   const chatForm = useChatForm()
@@ -28,12 +29,12 @@ export const Chat = () => {
       <TileButton
         ref={chat.refs.buttonRef}
         label='Начать диалог'
-        icon={<ArrowUpIcon className='size-4.5' />}
+        icon={<ArrowUpIcon className='size-[calc(18*var(--text-unit))]' />}
         aria-controls={PANEL_ID}
         aria-expanded={chat.state.isOpen}
         onClick={chat.functions.open}
         variant='difference'
-        className='invisible fixed bottom-6 left-6 z-40'
+        className='fixed bottom-[calc(24*var(--text-unit))] left-[calc(24*var(--text-unit))] z-40'
       />
 
       {/* The shadow sits outside the element that gets clipped, or the clip would cut it off. The
@@ -43,7 +44,7 @@ export const Chat = () => {
         ref={chat.refs.panelRef}
         id={PANEL_ID}
         aria-label='Чат'
-        className='invisible fixed top-[calc(106rem+var(--chat-viewport-top,0px))] bottom-[calc(24rem+var(--chat-viewport-bottom,0px))] left-6 z-50 w-[min(400px,calc(100vw-48rem))] rounded-[2.4rem] drop-shadow-[0_0_40rem_rgb(0_0_0/0.4)] max-lg:drop-shadow-none max-lg:right-6 max-lg:w-auto'
+        className='invisible fixed top-[calc(106*var(--text-unit)+var(--chat-viewport-top,0px))] bottom-[calc(24*var(--text-unit)+var(--chat-viewport-bottom,0px))] left-[calc(24*var(--text-unit))] z-50 w-[min(400px,calc(100vw-48*var(--text-unit)))] rounded-[calc(2.4*var(--text-unit))] drop-shadow-[0_0_calc(40*var(--text-unit))_rgb(0_0_0/0.4)] max-lg:drop-shadow-none max-lg:right-[calc(24*var(--text-unit))] max-lg:w-auto'
       >
         <div
           ref={chat.refs.clipRef}
@@ -57,27 +58,41 @@ export const Chat = () => {
             onClick={chat.functions.close}
             className={clsx(
               ICON_TILE_CLASS_NAME,
-              'absolute top-[4.5rem] right-[4.5rem] z-10 cursor-pointer focus-visible:outline-2 focus-visible:outline-background'
+              'absolute top-[calc(4.5*var(--text-unit))] right-[calc(4.5*var(--text-unit))] z-10 cursor-pointer focus-visible:outline-2 focus-visible:outline-background'
             )}
           >
-            <ArrowUpIcon data-chat-arrow className='absolute size-4.5' />
-            <MinusIcon data-chat-minus className='absolute w-4 opacity-0' />
+            <ArrowUpIcon data-chat-arrow className='absolute size-[calc(18*var(--text-unit))]' />
+            <MinusIcon
+              data-chat-minus
+              className='absolute w-[calc(16*var(--text-unit))] opacity-0'
+            />
           </button>
 
           <div ref={chat.refs.contentRef} className='invisible relative h-full'>
             <div ref={chatForm.refs.bodyRef} className='flex h-full flex-col'>
-              <p className='px-1.5 pt-1.25 pb-[10px] text-[14rem] leading-5 tracking-[-0.2rem] capitalize'>
+              <p className='px-[calc(6*var(--text-unit))] pt-[calc(5*var(--text-unit))] pb-[10px] text-[calc(14*var(--text-unit))] leading-[calc(20*var(--text-unit))] tracking-[calc(-0.2*var(--text-unit))] capitalize'>
                 To: {SITE_CONFIG.name}
               </p>
 
               <div
                 ref={chatForm.refs.formRef}
-                className='flex-1 overflow-y-auto px-3 py-[20px] text-[max(18px,20rem)] leading-[1.6]'
+                className='flex-1 overflow-y-auto px-[calc(12*var(--text-unit))] py-[20px] text-[max(18px,calc(20*var(--text-unit)))] leading-[1.6]'
               >
                 <ChatConversation chatForm={chatForm} />
               </div>
 
-              <div className='flex items-end justify-between px-3 py-[20px]'>
+              {!chatForm.state.step && <ChatConsent chatForm={chatForm} />}
+
+              {chatForm.state.isSendError && (
+                <p
+                  role='alert'
+                  className='px-[calc(12*var(--text-unit))] text-[14px] text-background/70'
+                >
+                  Не получилось отправить. Попробуйте ещё раз или напишите нам на почту
+                </p>
+              )}
+
+              <div className='flex items-end justify-between px-[calc(12*var(--text-unit))] py-[20px]'>
                 <a
                   href={`mailto:${SITE_CONFIG.email}`}
                   className='text-[14px] text-background/50 underline underline-offset-2'
@@ -90,16 +105,16 @@ export const Chat = () => {
                   type='button'
                   disabled={!chatForm.state.canSend}
                   onClick={() => chatForm.functions.send(chat.functions.close)}
-                  className='cursor-pointer rounded-[2.4rem] bg-background px-2 py-[6.5rem] text-[20rem] leading-5 tracking-[-0.2rem] text-foreground transition-opacity disabled:cursor-default disabled:opacity-40'
+                  className='cursor-pointer rounded-[calc(2.4*var(--text-unit))] bg-background px-[calc(8*var(--text-unit))] py-[calc(6.5*var(--text-unit))] text-[calc(20*var(--text-unit))] leading-[calc(20*var(--text-unit))] tracking-[calc(-0.2*var(--text-unit))] text-foreground transition-opacity disabled:cursor-default disabled:opacity-40'
                 >
-                  Отправить
+                  {chatForm.state.isSending ? 'Отправляем…' : 'Отправить'}
                 </button>
               </div>
             </div>
 
             <p
               ref={chatForm.refs.thanksRef}
-              className='invisible absolute inset-0 flex items-center justify-center px-1.5 text-center text-[20rem]'
+              className='invisible absolute inset-0 flex items-center justify-center px-[calc(6*var(--text-unit))] text-center text-[calc(20*var(--text-unit))]'
             >
               {chatForm.state.thanks}
             </p>

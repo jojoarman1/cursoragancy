@@ -31,7 +31,7 @@ export const Cta = () => {
 
       <h2
         id='cta-title'
-        className='relative w-fit text-[144rem] leading-40.5 tracking-[-5rem] uppercase max-lg:text-[46rem] max-lg:leading-13 max-lg:tracking-[-1.6rem]'
+        className='relative w-fit text-[calc(144*var(--text-unit))] leading-[calc(162*var(--text-unit))] tracking-[calc(-5*var(--text-unit))] uppercase max-lg:text-[calc(46*var(--text-unit))] max-lg:leading-[calc(52*var(--text-unit))] max-lg:tracking-[calc(-1.6*var(--text-unit))]'
       >
         {CTA_LINES.map(line => (
           <span key={line.id} className={clsx('block', ALIGN_CLASS_NAMES[line.align])}>
@@ -52,16 +52,16 @@ export const Cta = () => {
       <div data-cta-detail className='relative mt-22.5 max-lg:mt-10'>
         <TileButton
           label='Начать проект'
-          icon={<ArrowUpIcon className='size-6' />}
+          icon={<ArrowUpIcon className='size-[calc(34*var(--text-unit))]' />}
           variant='accent'
-          size='lg'
+          size='xl'
           onClick={requestChatOpen}
         />
       </div>
 
       <p
         data-cta-detail
-        className='absolute bottom-15 left-1/2 w-110 -translate-x-1/2 text-center text-[16rem] leading-tight font-bold max-lg:relative max-lg:bottom-auto max-lg:left-auto max-lg:mt-12 max-lg:w-auto max-lg:translate-x-0 max-lg:text-sm'
+        className='absolute bottom-15 left-1/2 max-w-80 -translate-x-1/2 text-center text-[calc(16*var(--text-unit))] leading-tight font-bold max-lg:relative max-lg:bottom-auto max-lg:left-auto max-lg:mt-12 max-lg:w-auto max-lg:translate-x-0 max-lg:text-sm'
       >
         {CTA_QUOTE}
       </p>

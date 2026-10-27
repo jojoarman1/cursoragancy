@@ -6,8 +6,7 @@ import { SITE_CONFIG } from '@/config/site'
 const TAG_URL = `https://mc.yandex.ru/metrika/tag.js?id=${YANDEX_METRIKA.id}`
 const PRODUCTION_HOST = new URL(SITE_CONFIG.url).hostname
 
-// Metrika's own loader. It only starts on the production domain: local runs and test screenshots
-// would otherwise land in the stats and the Webvisor recordings
+// Only on the production domain, so local runs stay out of the stats
 const SNIPPET = `if (location.hostname === ${JSON.stringify(PRODUCTION_HOST)}) {
   (function(m,e,t,r,i,k,a){
     m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
@@ -21,7 +20,6 @@ const SNIPPET = `if (location.hostname === ${JSON.stringify(PRODUCTION_HOST)}) {
   }));
 }`
 
-// Loads after hydration, so it never holds up the first paint
 export const YandexMetrika = () => (
   <>
     <Script id='yandex-metrika' strategy='afterInteractive'>

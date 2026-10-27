@@ -43,8 +43,8 @@ export const ChatConversation = ({ chatForm }: ChatConversationProps) => {
         <Fragment key={`current-${chatForm.state.stepId}`}>
           {currentStep.isNewParagraph ? PARAGRAPH_GAP : null}
           <span className='sr-only'>{currentStep.text}</span>
-          {/* Filled by the typing animation, so React never owns this text */}
-          <span aria-hidden='true' data-chat-title className='mr-[6px] select-none' />
+          {/* Filled by the typing animation. A space, not a margin: Safari ignores it for the caret */}
+          <span aria-hidden='true' data-chat-title className='select-none' />{' '}
           <ChatCurrentStep step={currentStep} chatForm={chatForm} />
         </Fragment>
       ) : null}
