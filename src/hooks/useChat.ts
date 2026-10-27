@@ -154,7 +154,13 @@ export const useChat = ({ onContentShow, onClosed }: UseChatParams) => {
         .fromTo(
           button.querySelector(LABEL_SELECTOR),
           { yPercent: 110 },
-          { yPercent: 0, duration: LABEL_RISE_DURATION, ease: LABEL_RISE_EASE }
+          {
+            yPercent: 0,
+            duration: LABEL_RISE_DURATION,
+            ease: LABEL_RISE_EASE,
+            // GSAP leaves translate: none inline, which would switch off the CSS hover roll for good
+            clearProps: 'transform,translate'
+          }
         )
     )
   })

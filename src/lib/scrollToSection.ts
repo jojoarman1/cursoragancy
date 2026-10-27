@@ -6,14 +6,15 @@ import { SECTION_SCROLL_DURATION, SECTION_SCROLL_EASE } from '@/config/animation
 
 gsap.registerPlugin(ScrollToPlugin)
 
-// Smoothly scrolls to "/#works"-style links that point at a section of the current page.
-// Returns false when the link leads elsewhere, so the caller lets the router handle it
+// Smoothly scrolls to "/#works"-style links that point at a section of the current page, and
+// to the top for a plain link to the current page (the header logo on home). Returns false when
+// the link leads elsewhere, so the caller lets the router handle it
 export const scrollToSection = (href: string) => {
   const url = new URL(href, window.location.href)
-  if (url.pathname !== window.location.pathname || !url.hash) return false
+  if (url.pathname !== window.location.pathname) return false
 
-  const section = document.querySelector(url.hash)
-  if (!section) return false
+  const section = url.hash ? document.querySelector(url.hash) : 0
+  if (section === null) return false
 
   const isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
   gsap.to(window, {
@@ -23,7 +24,8 @@ export const scrollToSection = (href: string) => {
     ease: SECTION_SCROLL_EASE,
     overwrite: true
   })
-  window.history.replaceState(window.history.state, '', url.hash)
+  // Without a hash this drops the old one, so the address is plain "/" again at the top
+  window.history.replaceState(window.history.state, '', url.hash || url.pathname)
   return true
 }
 

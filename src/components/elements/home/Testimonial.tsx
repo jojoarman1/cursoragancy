@@ -12,18 +12,18 @@ export const Testimonial = () => {
     <section aria-label='Цитата' className='pr-6 pb-7 pl-7 max-lg:px-4'>
       <figure
         ref={testimonialReveal.refs.cardRef}
-        className='rounded-sm bg-white px-6 py-[36rem] max-lg:px-4 max-lg:py-6'
+        className='rounded-sm bg-white px-6 py-9 max-lg:px-4 max-lg:py-6'
       >
-        <div className='mx-auto w-[416rem] max-lg:w-auto'>
+        <div className='mx-auto w-104 max-lg:w-auto'>
           <blockquote
             ref={testimonialReveal.refs.quoteRef}
-            className='text-[20rem] leading-[1.25] max-lg:text-lg'
+            className='text-[20rem] leading-tight max-lg:text-lg'
           >
             {TESTIMONIAL.text}
           </blockquote>
           <figcaption
             ref={testimonialReveal.refs.authorRef}
-            className='mt-[23rem] flex items-center gap-3 text-[20rem] leading-[1.25] max-lg:text-lg'
+            className='mt-5.75 flex items-center gap-3 text-[20rem] leading-tight max-lg:text-lg'
           >
             <Image
               data-author-avatar
@@ -31,7 +31,7 @@ export const Testimonial = () => {
               alt=''
               width={100}
               height={100}
-              className='size-[50rem] shrink-0 rounded-full object-cover'
+              className='size-12.5 shrink-0 rounded-full object-cover'
             />
             <span>
               {/* Each line clips to itself, so it rises from under its own line */}

@@ -9,7 +9,6 @@ import {
   type Project,
   REEL_WIDTH_SHARE
 } from '@/config/projects'
-import { useFlowDistortion } from '@/hooks/useFlowDistortion'
 import { getReelDropPercent } from '@/lib/projectReel'
 
 // The cover's share of the viewport: full width on phones, 875 of the 1920 artboard otherwise
@@ -23,7 +22,6 @@ interface ProjectCoverProps {
 }
 
 export const ProjectCover = ({ project }: ProjectCoverProps) => {
-  const flowDistortion = useFlowDistortion()
   const reelStyle: ReelStyle = {
     width: `${REEL_WIDTH_SHARE * 100}%`,
     aspectRatio: project.reel.aspectRatio,
@@ -32,12 +30,10 @@ export const ProjectCover = ({ project }: ProjectCoverProps) => {
 
   return (
     <div
-      ref={flowDistortion.refs.coverRef}
       className='project-cover relative overflow-hidden rounded-sm bg-foreground/10'
       style={{ aspectRatio: COVER_ASPECT_RATIO }}
     >
       <Image
-        ref={flowDistortion.refs.imageRef}
         src={project.cover}
         alt={project.title}
         fill
@@ -45,14 +41,8 @@ export const ProjectCover = ({ project }: ProjectCoverProps) => {
         quality={COVER_IMAGE_QUALITY}
         className='object-cover'
       />
-      {/* The flow distortion redraws the photo here while the mouse stirs it; hidden otherwise */}
-      <canvas
-        ref={flowDistortion.refs.canvasRef}
-        className='pointer-events-none absolute inset-0 size-full opacity-0'
-      />
       {!!project.logo && (
-        // After the canvas, so it stays crisp while the photo smears, and before the dimming and the
-        // reel, which cover it. Turned white and blended as difference, so a logo of any colour reads
+        // Before the dimming and the reel, which cover it. Turned white and blended as difference, so a logo of any colour reads
         // on both light and dark parts of the photo. A .svg src is served unoptimised
         <Image
           src={project.logo.src}

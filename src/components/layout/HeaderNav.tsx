@@ -16,7 +16,7 @@ export const HeaderNav = () => (
       </ul>
     </nav>
 
-    <div className='ml-[300rem] text-base max-lg:hidden'>
+    <div className='ml-75 text-base max-lg:hidden'>
       <HeaderLink
         href={TELEGRAM_LINK.href}
         target='_blank'

@@ -16,7 +16,7 @@ export const TILE_SIZE_CLASS_NAMES: Record<TileSize, { root: string; tile: strin
     tile: 'size-6 rounded-[2.4rem]'
   },
   lg: {
-    root: 'gap-3 rounded-[3.2rem] py-[6rem] pr-[6rem] pl-3 text-[28rem] leading-7 tracking-[-0.28rem]',
+    root: 'gap-3 rounded-[3.2rem] py-1.5 pr-1.5 pl-3 text-[28rem] leading-7 tracking-[-0.28rem]',
     tile: 'size-9 rounded-[3.2rem]'
   }
 }

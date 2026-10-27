@@ -22,7 +22,7 @@ const JSON_LD = {
       '@id': `${SITE_CONFIG.url}/#organization`,
       name: SITE_CONFIG.name,
       url: SITE_CONFIG.url,
-      logo: `${SITE_CONFIG.url}/icon.svg`,
+      logo: `${SITE_CONFIG.url}/web-app-manifest-512x512.png`,
       description: SITE_CONFIG.description
     },
     {

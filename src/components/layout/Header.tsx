@@ -7,6 +7,7 @@ import { usePathname } from 'next/navigation'
 import { MenuIcon } from '@/components/icon/MenuIcon'
 import { SITE_CONFIG } from '@/config/site'
 import { useMenu } from '@/hooks/useMenu'
+import { handleSectionLinkClick } from '@/lib/scrollToSection'
 import { useIsHeroTitleVisible } from '@/stores/hero'
 
 import { HeaderNav } from './HeaderNav'
@@ -31,6 +32,7 @@ export const Header = () => {
       <header className={clsx(BAR_CLASS_NAME, 'inset-x-0 text-white mix-blend-difference')}>
         <Link
           href='/'
+          onClick={event => handleSectionLinkClick(event, '/')}
           className={clsx(
             'text-[26rem] leading-none font-bold tracking-tighter transition-[opacity,visibility]',
             isLogoHidden ? 'invisible opacity-0' : 'pointer-events-auto'

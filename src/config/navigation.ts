@@ -5,7 +5,6 @@ export interface NavigationLink {
 
 // TODO: point at the real sections once the pages exist
 export const NAVIGATION_LINKS: NavigationLink[] = [
-  { label: 'Кто мы?', href: '/#about' },
   { label: 'Работы', href: '/#works' },
   { label: 'Сервис', href: '/#services' }
 ]

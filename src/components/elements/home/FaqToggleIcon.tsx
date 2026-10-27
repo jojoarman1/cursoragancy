@@ -2,7 +2,7 @@ import clsx from 'clsx'
 
 // Both arms pivot on the tip, where they meet
 const ARM_CLASS_NAME =
-  'transition-transform duration-700 ease-[var(--ease-expo-out)] [transform-box:view-box] [transform-origin:12px_8px]'
+  'transition-transform duration-700 ease-expo-out [transform-box:view-box] [transform-origin:12px_8px]'
 
 interface FaqToggleIconProps {
   isOpen: boolean
@@ -16,7 +16,7 @@ export const FaqToggleIcon = ({ isOpen, className }: FaqToggleIconProps) => (
     fill='none'
     stroke='currentColor'
     strokeWidth='1.1'
-    strokeLinecap='round'
+    strokeLinecap='square'
     aria-hidden='true'
     className={className}
   >

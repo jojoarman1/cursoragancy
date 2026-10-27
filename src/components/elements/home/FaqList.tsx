@@ -11,7 +11,7 @@ export const FaqList = () => {
   const [openId, setOpenId] = useState<string | null>(FAQ_ITEMS[0].id)
 
   return (
-    <ul className='mt-[34rem] text-[24rem] leading-[28rem] max-lg:mt-6 max-lg:text-[18rem] max-lg:leading-[24rem]'>
+    <ul className='mt-8.5 text-[24rem] leading-7 max-lg:mt-6 max-lg:text-[18rem] max-lg:leading-6'>
       {FAQ_ITEMS.map(item => (
         <FaqEntry
           key={item.id}

@@ -14,7 +14,7 @@ import { CtaWordMask } from './CtaWordMask'
 
 const ALIGN_CLASS_NAMES: Record<CtaLine['align'], string> = {
   start: '',
-  indent: 'pl-[190rem] max-lg:pl-[60rem]',
+  indent: 'pl-47.5 max-lg:pl-15',
   end: 'text-right'
 }
 
@@ -25,13 +25,13 @@ export const Cta = () => {
     <section
       ref={ctaReveal.refs.sectionRef}
       aria-labelledby='cta-title'
-      className='relative flex min-h-[1500rem] flex-col items-center overflow-hidden pt-[300rem] bg-foreground px-7 pb-[200rem] text-background max-lg:min-h-svh max-lg:justify-center max-lg:px-4 max-lg:py-[120rem]'
+      className='relative flex min-h-375 flex-col items-center overflow-hidden pt-75 bg-foreground px-7 pb-50 text-background max-lg:min-h-svh max-lg:justify-center max-lg:px-4 max-lg:py-30'
     >
       <CtaBackground areaRef={ctaReveal.refs.sectionRef} />
 
       <h2
         id='cta-title'
-        className='relative w-fit text-[144rem] leading-[162rem] tracking-[-5rem] uppercase max-lg:text-[46rem] max-lg:leading-[52rem] max-lg:tracking-[-1.6rem]'
+        className='relative w-fit text-[144rem] leading-40.5 tracking-[-5rem] uppercase max-lg:text-[46rem] max-lg:leading-13 max-lg:tracking-[-1.6rem]'
       >
         {CTA_LINES.map(line => (
           <span key={line.id} className={clsx('block', ALIGN_CLASS_NAMES[line.align])}>
@@ -49,7 +49,7 @@ export const Cta = () => {
         ))}
       </h2>
 
-      <div data-cta-detail className='relative mt-[90rem] max-lg:mt-10'>
+      <div data-cta-detail className='relative mt-22.5 max-lg:mt-10'>
         <TileButton
           label='Начать проект'
           icon={<ArrowUpIcon className='size-6' />}
@@ -61,7 +61,7 @@ export const Cta = () => {
 
       <p
         data-cta-detail
-        className='absolute bottom-[60rem] left-1/2 w-[440rem] -translate-x-1/2 text-center text-[16rem] leading-[1.25] font-bold max-lg:relative max-lg:bottom-auto max-lg:left-auto max-lg:mt-12 max-lg:w-auto max-lg:translate-x-0 max-lg:text-sm'
+        className='absolute bottom-15 left-1/2 w-110 -translate-x-1/2 text-center text-[16rem] leading-tight font-bold max-lg:relative max-lg:bottom-auto max-lg:left-auto max-lg:mt-12 max-lg:w-auto max-lg:translate-x-0 max-lg:text-sm'
       >
         {CTA_QUOTE}
       </p>

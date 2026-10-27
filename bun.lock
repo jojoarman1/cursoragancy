@@ -3,7 +3,7 @@
   "configVersion": 1,
   "workspaces": {
     "": {
-      "name": "cusroragency",
+      "name": "dialogagency",
       "dependencies": {
         "@gsap/react": "^2.1.2",
         "@siberiacancode/reactuse": "^1.0.17",

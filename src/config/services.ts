@@ -1,16 +1,34 @@
+// A service's picture is a lens collage: a background and an optional cut-out, a transparent PNG
+// laid over it (files in public/services/<id>/)
+export interface ServiceArt {
+  background: string
+  foreground?: string
+  // A plain sheet covers the whole column (stretched: the paper's proportions differ from the
+  // column's by ~2%, which doesn't show)
+  isSheet?: boolean
+}
+
 export interface Service {
   id: string
   title: string
-  // TODO: replace with the service's photo in public/services/
-  placeholderColor: string
+  art: ServiceArt
 }
 
+const PAPER_SHEET: ServiceArt = { background: '/services/paper.png', isSheet: true }
+
 export const SERVICES = [
-  { id: 'brand-strategy', title: 'Стратегия бренда', placeholderColor: '#3b3833' },
-  { id: 'growth-strategy', title: 'Стратегия развития', placeholderColor: '#2f3a40' },
-  { id: 'identity', title: 'Айдентика', placeholderColor: '#5a5f6b' },
-  { id: 'web-design', title: 'Дизайн сайта', placeholderColor: '#4a3b3f' },
-  { id: 'web-development', title: 'Разработка сайта', placeholderColor: '#33403a' }
+  {
+    id: 'brand-strategy',
+    title: 'Стратегия бренда',
+    art: {
+      background: '/services/brand-strategy/background.png',
+      foreground: '/services/brand-strategy/foreground.png'
+    }
+  },
+  { id: 'growth-strategy', title: 'Стратегия развития', art: PAPER_SHEET },
+  { id: 'identity', title: 'Айдентика', art: PAPER_SHEET },
+  { id: 'web-design', title: 'Дизайн сайта', art: PAPER_SHEET },
+  { id: 'web-development', title: 'Разработка сайта', art: PAPER_SHEET }
 ] as const satisfies readonly Service[]
 
 export type ServiceId = (typeof SERVICES)[number]['id']
