@@ -21,7 +21,11 @@ module.exports = {
         // viceseason uses 3000 and 3002
         PORT: '3010',
         // Only reachable through nginx (HTTPS)
-        HOSTNAME: '127.0.0.1'
+        HOSTNAME: '127.0.0.1',
+        // The image optimizer (sharp) allocates natively: without these glibc keeps freed memory
+        // in many arenas and RSS creeps up while the JS heap stays flat
+        MALLOC_ARENA_MAX: '2',
+        MALLOC_TRIM_THRESHOLD_: '131072'
       }
     }
   ]
