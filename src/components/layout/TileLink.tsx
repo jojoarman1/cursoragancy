@@ -31,7 +31,6 @@ export const TileLink = ({
     <a
       ref={linkRef}
       href={href}
-      aria-label={label}
       className={clsx(
         'group',
         TILE_CLASS_NAME,

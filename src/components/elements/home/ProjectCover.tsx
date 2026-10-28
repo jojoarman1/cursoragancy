@@ -3,12 +3,7 @@
 import Image from 'next/image'
 import type { CSSProperties } from 'react'
 
-import {
-  COVER_ASPECT_RATIO,
-  COVER_IMAGE_QUALITY,
-  type Project,
-  REEL_WIDTH_SHARE
-} from '@/config/projects'
+import { COVER_ASPECT_RATIO, type Project, REEL_WIDTH_SHARE } from '@/config/projects'
 import { getReelDropPercent } from '@/lib/projectReel'
 
 // The cover's share of the viewport: full width on phones, 875 of the 1920 artboard otherwise
@@ -38,7 +33,6 @@ export const ProjectCover = ({ project }: ProjectCoverProps) => {
         alt={project.title}
         fill
         sizes={COVER_SIZES}
-        quality={COVER_IMAGE_QUALITY}
         className='object-cover'
       />
       {!!project.logo && (

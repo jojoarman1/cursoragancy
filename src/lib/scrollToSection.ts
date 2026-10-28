@@ -25,7 +25,8 @@ export const scrollToSection = (href: string) => {
     overwrite: true
   })
   // Without a hash this drops the old one, so the address is plain "/" again at the top
-  window.history.replaceState(window.history.state, '', url.hash || url.pathname)
+  // Next's History wrapper preserves its own state and synchronizes the router for app calls.
+  window.history.replaceState(null, '', url.hash || url.pathname)
   return true
 }
 

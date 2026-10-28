@@ -52,8 +52,6 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
   // The on-screen keyboard shrinks the layout, so fixed panels like the chat stay above it
   interactiveWidget: 'resizes-content',
   themeColor: SITE_CONFIG.themeColor,

@@ -5,6 +5,7 @@ import { FOOTER_ID, TELEGRAM_LINK } from '@/config/navigation'
 import { SITE_CONFIG } from '@/config/site'
 
 import { FooterNav } from './FooterNav'
+import { RollingLabel } from './RollingLabel'
 
 const LABEL_CLASS_NAME = 'font-mono text-xs text-background/50 uppercase'
 const LINKS_CLASS_NAME = 'mt-[calc(19*var(--text-unit))] flex flex-col items-start'
@@ -37,8 +38,13 @@ export const Footer = () => (
     <div className='max-lg:mt-8'>
       <p className={LABEL_CLASS_NAME}>(Socials)</p>
       <div className={LINKS_CLASS_NAME}>
-        <a href={TELEGRAM_LINK.href} target='_blank' rel='noreferrer' className='text-base'>
-          {TELEGRAM_LINK.label}
+        <a
+          href={TELEGRAM_LINK.href}
+          target='_blank'
+          rel='noreferrer'
+          className='group inline-flex text-base'
+        >
+          <RollingLabel label={TELEGRAM_LINK.label} />
         </a>
       </div>
     </div>

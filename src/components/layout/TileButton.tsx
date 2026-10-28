@@ -32,7 +32,6 @@ export const TileButton = ({
     <button
       ref={mergedRef}
       type='button'
-      aria-label={label}
       className={clsx(
         'group',
         TILE_CLASS_NAME,

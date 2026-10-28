@@ -12,7 +12,7 @@ interface RollingLabelProps {
 // while its copy rises in from below, growing from 85% and sharpening. CSS transitions turn around
 // from wherever they are, so a quick leave reverses smoothly
 export const RollingLabel = ({ label }: RollingLabelProps) => (
-  <span aria-hidden='true' className='relative whitespace-pre [clip-path:inset(0_-50%)]'>
+  <span className='relative overflow-y-clip whitespace-pre [clip-path:inset(0_-50%)]'>
     <span
       data-rolling-label
       className={clsx(
@@ -23,6 +23,7 @@ export const RollingLabel = ({ label }: RollingLabelProps) => (
       {label}
     </span>
     <span
+      aria-hidden='true'
       className={clsx(
         'absolute inset-0 origin-bottom translate-y-[110%] scale-[0.85] blur-[3px] group-hover:translate-y-0 group-hover:scale-100 group-hover:blur-none group-focus-visible:translate-y-0 group-focus-visible:scale-100 group-focus-visible:blur-none',
         TRANSITION_CLASS_NAME

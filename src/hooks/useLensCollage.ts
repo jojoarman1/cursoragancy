@@ -10,6 +10,7 @@ import { useLensParallax } from './useLensParallax'
 
 // Share of the collage on screen before it comes in
 const IN_VIEW_THRESHOLD = 0.35
+const PRELOAD_MARGIN = '300px 0px'
 
 export interface UseLensCollageParams {
   art: ServiceArt
@@ -26,11 +27,22 @@ export const useLensCollage = ({ art, isActive }: UseLensCollageParams) => {
   const viewRef = useRef<LensView>({ offset: { x: 0, y: 0 }, paper: 0, cutout: 0 })
   const [isSupported, setIsSupported] = useState(true)
   const [isReady, setIsReady] = useState(false)
+  const [hasApproached, setHasApproached] = useState(false)
+
+  // Compile shaders and upload textures shortly before the collage reaches the screen.
+  useIntersectionObserver(canvasRef, {
+    rootMargin: PRELOAD_MARGIN,
+    enabled: !hasApproached,
+    onChange: ([entry]) => {
+      if (entry.isIntersecting) setHasApproached(true)
+    }
+  })
 
   const redraw = () => collageRef.current?.render(viewRef.current)
 
   // WebGL and a ResizeObserver are external systems, which is what an effect is for
   useEffect(() => {
+    if (!hasApproached) return
     const canvas = canvasRef.current
     if (!canvas) return
     let resizeObserver: ResizeObserver | undefined
@@ -66,7 +78,7 @@ export const useLensCollage = ({ art, isActive }: UseLensCollageParams) => {
       collageRef.current?.dispose()
       collageRef.current = null
     }
-  }, [art.background, art.foreground, art.isSheet])
+  }, [art.background, art.foreground, art.isSheet, hasApproached])
 
   // Comes in when scrolled to, not as soon as the page loads; leaving and coming back replays it
   const intersectionObserver = useIntersectionObserver(canvasRef, { threshold: IN_VIEW_THRESHOLD })

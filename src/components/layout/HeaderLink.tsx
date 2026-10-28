@@ -25,7 +25,6 @@ export const HeaderLink = ({ href, label, icon, className, ...props }: HeaderLin
       ref={linkRef}
       href={href}
       onClick={event => handleSectionLinkClick(event, href)}
-      aria-label={label}
       className={clsx(
         'group pointer-events-auto flex items-center gap-[calc(4*var(--text-unit))]',
         className

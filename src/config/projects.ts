@@ -1,5 +1,3 @@
-// High enough that the shots keep their texture after compression; listed in next.config images
-export const COVER_IMAGE_QUALITY = 90
 // The cover box (905×660, like bymonolog.com) and the reel's share of its width before it grows
 export const COVER_ASPECT_RATIO = 905 / 660
 export const REEL_WIDTH_SHARE = 0.45

@@ -23,16 +23,19 @@ export const useIconFly = ({ targetRef }: UseIconFlyParams) => {
 
   useGSAP(
     () => {
+      const icon = targetRef.current?.querySelector<HTMLElement>(ICON_SELECTOR)
+      if (!icon) return
+
       timelineRef.current = gsap
         .timeline({ paused: true })
-        .to(ICON_SELECTOR, {
+        .to(icon, {
           xPercent: ICON_OFFSET,
           yPercent: -ICON_OFFSET,
           duration: ICON_OUT_DURATION,
           ease: 'power2.in'
         })
-        .set(ICON_SELECTOR, { xPercent: -ICON_OFFSET, yPercent: ICON_OFFSET })
-        .to(ICON_SELECTOR, {
+        .set(icon, { xPercent: -ICON_OFFSET, yPercent: ICON_OFFSET })
+        .to(icon, {
           xPercent: 0,
           yPercent: 0,
           duration: ICON_IN_DURATION,
