@@ -21,31 +21,30 @@ export const useIconFly = ({ targetRef }: UseIconFlyParams) => {
   const reduceMotion = usePreferredReducedMotion() === 'reduce'
   const timelineRef = useRef<gsap.core.Timeline>(null)
 
-  const { contextSafe } = useGSAP({ scope: targetRef })
-
-  const launchIcon = contextSafe(() => {
-    if (timelineRef.current?.isActive()) return
-
-    timelineRef.current = gsap
-      .timeline()
-      .to(ICON_SELECTOR, {
-        xPercent: ICON_OFFSET,
-        yPercent: -ICON_OFFSET,
-        duration: ICON_OUT_DURATION,
-        ease: 'power2.in'
-      })
-      .set(ICON_SELECTOR, { xPercent: -ICON_OFFSET, yPercent: ICON_OFFSET })
-      .to(ICON_SELECTOR, {
-        xPercent: 0,
-        yPercent: 0,
-        duration: ICON_IN_DURATION,
-        ease: 'power3.out'
-      })
-  })
+  useGSAP(
+    () => {
+      timelineRef.current = gsap
+        .timeline({ paused: true })
+        .to(ICON_SELECTOR, {
+          xPercent: ICON_OFFSET,
+          yPercent: -ICON_OFFSET,
+          duration: ICON_OUT_DURATION,
+          ease: 'power2.in'
+        })
+        .set(ICON_SELECTOR, { xPercent: -ICON_OFFSET, yPercent: ICON_OFFSET })
+        .to(ICON_SELECTOR, {
+          xPercent: 0,
+          yPercent: 0,
+          duration: ICON_IN_DURATION,
+          ease: 'power3.out'
+        })
+    },
+    { scope: targetRef }
+  )
 
   useEventListener(targetRef, 'pointerenter', (event: PointerEvent) => {
     if (reduceMotion || event.pointerType !== 'mouse') return
 
-    launchIcon()
+    if (!timelineRef.current?.isActive()) timelineRef.current?.restart()
   })
 }

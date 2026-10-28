@@ -40,7 +40,7 @@ export const useMenu = () => {
   const timelineRef = useRef<gsap.core.Timeline>(null)
   const insetRef = useRef<MorphInset>({ top: 0, right: 0, bottom: 0, left: 0, radius: 0 })
 
-  const { contextSafe } = useGSAP()
+  const { context, contextSafe } = useGSAP()
 
   const renderInset = contextSafe(() => {
     if (clipRef.current) clipRef.current.style.clipPath = toClipPath(insetRef.current)
@@ -57,6 +57,8 @@ export const useMenu = () => {
     const button = buttonRef.current
     if (!panel || !button) return
 
+    // Stop the previous transition without reverting its current position.
+    context.kill()
     menuDisclosure.open()
     const items = gsap.utils.toArray<HTMLElement>(REVEAL_SELECTOR, contentRef.current)
     const masks = items.map(item => item.parentElement)
@@ -104,6 +106,7 @@ export const useMenu = () => {
     const button = buttonRef.current
     if (!panel || !button) return
 
+    context.kill()
     menuDisclosure.close()
 
     playTimeline(

@@ -46,7 +46,7 @@ export const PROJECTS: Project[] = [
       'Комплексная разработка нового сайта для VICESEASON UNDERCOVER - авангардного белорусского бренда уличной одежды. Создали полноценную e-commerce платформу с собственной серверной частью, административной панелью, CRM-системой, складским учётом и интеграцией онлайн-оплаты.',
     url: 'https://viceseason.com',
     metric: { value: '42%', label: 'Увеличение кол-ва клиентов и продаж' },
-    cover: '/projects/viceseason-undercover/cover.png',
+    cover: '/projects/viceseason-undercover/cover.webp',
     logo: { src: '/projects/viceseason-undercover/logo.svg', width: 802, height: 802 },
     reel: {
       video: '/projects/viceseason-undercover/reel.mp4',
@@ -60,7 +60,7 @@ export const PROJECTS: Project[] = [
     description:
       'Создание уникальной визуальной айдентики для личного бренда популярного видеоблогера Глеба Сайлия',
     url: 'https://saliyclothes.com',
-    cover: '/projects/saliystudio/cover.png',
+    cover: '/projects/saliystudio/cover.webp',
     logo: { src: '/projects/saliystudio/logo.svg', width: 92, height: 38 },
     reel: {
       video: '/projects/saliystudio/reel.mp4',
@@ -75,7 +75,7 @@ export const PROJECTS: Project[] = [
     description:
       'Сайт доставки суши в Челябинске: каталог с категориями, акции на главной, корзина и онлайн-заказ',
     url: 'https://sushist74.ru',
-    cover: '/projects/sushist/cover.png',
+    cover: '/projects/sushist/cover.webp',
     reel: {
       video: '/projects/sushist/reel.mp4',
       poster: '/projects/sushist/reel-poster.jpg',

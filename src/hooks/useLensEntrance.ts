@@ -19,9 +19,10 @@ export const useLensEntrance = ({ viewRef, redraw, isPlaying }: UseLensEntranceP
   const reduceMotion = usePreferredReducedMotion() === 'reduce'
 
   useGSAP(
-    () => {
+    context => {
+      // Release previous tweens without resetting the current entrance/exit position.
+      context.kill()
       const view = viewRef.current
-      gsap.killTweensOf(view)
 
       if (reduceMotion) {
         const progress = isPlaying ? 1 : 0

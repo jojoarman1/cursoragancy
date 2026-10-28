@@ -59,7 +59,7 @@ export const useChat = ({ onContentShow, onClosed }: UseChatParams) => {
   useVisualViewportOffset({ targetRef: panelRef, isEnabled: panelDisclosure.opened })
   const footerHide = useChatButtonFooterHide({ buttonRef, isOpen: panelDisclosure.opened })
 
-  const { contextSafe } = useGSAP({ scope: rootRef })
+  const { context, contextSafe } = useGSAP({ scope: rootRef })
 
   const renderInset = contextSafe(() => {
     const clip = clipRef.current
@@ -82,6 +82,8 @@ export const useChat = ({ onContentShow, onClosed }: UseChatParams) => {
     const button = buttonRef.current
     if (!panel || !button) return
 
+    // Stop the previous transition without reverting its current position.
+    context.kill()
     panelDisclosure.open()
     hasOpenedRef.current = true
     reachGoal(goal)
@@ -119,7 +121,8 @@ export const useChat = ({ onContentShow, onClosed }: UseChatParams) => {
           { autoAlpha: 1, duration: PANEL_CONTENT_DURATION, ease: PANEL_CONTENT_EASE },
           `-=${PANEL_CONTENT_OVERLAP}`
         )
-        .add(onContentShow, '<')
+        // The form owns its own animations; keep its context separate from the panel's.
+        .add(() => context.ignore(onContentShow), '<')
     )
   })
 
@@ -137,6 +140,7 @@ export const useChat = ({ onContentShow, onClosed }: UseChatParams) => {
     const button = buttonRef.current
     if (!panel || !button) return
 
+    context.kill()
     panelDisclosure.close()
 
     playTimeline(
@@ -144,7 +148,7 @@ export const useChat = ({ onContentShow, onClosed }: UseChatParams) => {
         .timeline({
           onComplete: () => {
             button.focus()
-            onClosed()
+            context.ignore(onClosed)
           }
         })
         .to(contentRef.current, { autoAlpha: 0, duration: PANEL_CONTENT_HIDE_DURATION })

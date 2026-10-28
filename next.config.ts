@@ -7,10 +7,7 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   reactCompiler: true,
   images: {
-    // AVIF keeps photo detail at a smaller size; WebP is the fallback
-    formats: ['image/avif', 'image/webp'],
-    // Next 16 only allows 75 unless listed; project covers use the high one
-    qualities: [75, 90]
+    unoptimized: true
   },
   experimental: {
     // Barrel-file packages: only the modules actually imported get bundled

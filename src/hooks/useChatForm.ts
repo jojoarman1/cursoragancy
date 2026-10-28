@@ -3,6 +3,7 @@ import {
   useAutoScroll,
   useBoolean,
   useEventListener,
+  useIsomorphicLayoutEffect,
   useLatest,
   useMediaQuery,
   useMutation,
@@ -96,7 +97,6 @@ export const useChatForm = () => {
   const thanksRef = useRef<HTMLParagraphElement>(null)
   const inputRef = useRef<HTMLSpanElement>(null)
   const sendRef = useRef<HTMLButtonElement>(null)
-  const timelineRef = useRef<gsap.core.Timeline>(null)
   // Steps change only while the panel is shown; the first reveal comes from opening it
   const isShownRef = useRef(false)
   const isEditingRef = useRef(false)
@@ -106,11 +106,12 @@ export const useChatForm = () => {
   const name = answers[0]?.values[0] ?? ''
   const canSend = !isSent && !step && isConsentGiven && !leadMutation.isLoading
 
-  const { contextSafe } = useGSAP({ scope: formRef })
+  const { context, contextSafe } = useGSAP({ scope: formRef })
 
   const revealStep = contextSafe(() => {
     isShownRef.current = true
-    timelineRef.current?.kill()
+    // Release earlier steps and their detached character spans, keeping the visible state.
+    context.kill()
 
     if (!step) {
       sendRef.current?.focus()
@@ -127,7 +128,6 @@ export const useChatForm = () => {
         else formRef.current?.querySelector<HTMLElement>(OPTION_SELECTOR)?.focus()
       }
     })
-    timelineRef.current = timeline
 
     if (input && editValueRef.current) input.textContent = editValueRef.current
     editValueRef.current = ''
@@ -180,12 +180,10 @@ export const useChatForm = () => {
     if (reduceMotion) timeline.progress(1)
   })
 
-  useGSAP(
-    () => {
-      if (isShownRef.current) revealStep()
-    },
-    { dependencies: [answers.length, stepId], scope: formRef }
-  )
+  const latestRevealStep = useLatest(revealStep)
+  useIsomorphicLayoutEffect(() => {
+    if (isShownRef.current) latestRevealStep.ref.current()
+  }, [answers.length, stepId, latestRevealStep.ref])
 
   const completeStep = (values: string[], next?: string) => {
     if (!stepId || !step) return
@@ -284,14 +282,17 @@ export const useChatForm = () => {
   }
 
   const showThanks = contextSafe((onThanksRead: () => void) => {
+    // A request may finish after the form has unmounted.
+    if (!formRef.current) return
     toggleSent(true)
 
-    timelineRef.current?.kill()
-    timelineRef.current = gsap
+    context.kill()
+    gsap
       .timeline()
       .to(bodyRef.current, { autoAlpha: 0, duration: THANKS_DURATION, ease: THANKS_EASE })
       .to(thanksRef.current, { autoAlpha: 1, duration: THANKS_DURATION, ease: THANKS_EASE })
-      .add(onThanksRead, `+=${THANKS_HOLD}`)
+      // Closing the panel must not attach its context to the form's context.
+      .add(() => context.ignore(onThanksRead), `+=${THANKS_HOLD}`)
   })
 
   const send = async (onThanksRead: () => void) => {
@@ -310,7 +311,7 @@ export const useChatForm = () => {
 
   const onClosed = contextSafe(() => {
     // Also stops a pending auto-close after sending when the chat was closed by hand
-    timelineRef.current?.kill()
+    context.kill()
     isShownRef.current = false
     if (!latestIsSent.ref.current) return
 

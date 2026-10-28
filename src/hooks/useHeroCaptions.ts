@@ -20,7 +20,7 @@ export const useHeroCaptions = ({ isVisible }: UseHeroCaptionsParams) => {
   const reduceMotion = usePreferredReducedMotion() === 'reduce'
 
   useGSAP(
-    () => {
+    context => {
       if (!isVisible) return
 
       const reveal = {
@@ -41,16 +41,23 @@ export const useHeroCaptions = ({ isVisible }: UseHeroCaptionsParams) => {
       gsap.set(slogan, { visibility: 'visible' })
       // All words rise together, each from under its own line. autoSplit re-splits when the font
       // loads or the width changes; the returned tween keeps its progress across re-splits
-      SplitText.create(slogan, {
-        type: 'lines,words',
-        mask: 'lines',
-        // Whole words read fine as they are; aria-label isn't allowed on the span inside the h1
-        aria: 'none',
-        autoSplit: true,
-        onSplit: split => gsap.fromTo(split.words, { yPercent: reduceMotion ? 0 : 100 }, reveal)
+      let split: SplitText | undefined
+      // SplitText owns the returned tween and reverts it on every re-split. Recording those
+      // tweens in the outer context would retain old word elements after each resize.
+      context.ignore(() => {
+        split = SplitText.create(slogan, {
+          type: 'lines,words',
+          mask: 'lines',
+          // Whole words read fine as they are; aria-label isn't allowed on the span inside the h1
+          aria: 'none',
+          autoSplit: true,
+          onSplit: split => gsap.fromTo(split.words, { yPercent: reduceMotion ? 0 : 100 }, reveal)
+        })
       })
+
+      return () => split?.revert()
     },
-    { dependencies: [isVisible], scope: containerRef }
+    { dependencies: [isVisible, reduceMotion], scope: containerRef, revertOnUpdate: true }
   )
 
   return {

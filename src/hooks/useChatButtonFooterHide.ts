@@ -23,7 +23,9 @@ export const useChatButtonFooterHide = ({ buttonRef, isOpen }: UseChatButtonFoot
   const latestIsFooterInView = useLatest(isFooterInView)
 
   useGSAP(
-    () => {
+    context => {
+      // Keep the rendered opacity, but release tweens from earlier footer crossings.
+      context.kill()
       // While the panel is open, it owns the button
       if (isOpen) return
       gsap.to(buttonRef.current, {
