@@ -12,6 +12,9 @@ import { requestChatOpen } from '@/lib/chatEvents'
 import { CtaBackground } from './CtaBackground'
 import { CtaWordMask } from './CtaWordMask'
 
+// Keep one accessible heading while SplitText animates its visual characters.
+const TITLE_LABEL = CTA_LINES.flatMap(line => line.words.map(word => word.text)).join(' ')
+
 const ALIGN_CLASS_NAMES: Record<CtaLine['align'], string> = {
   start: '',
   indent: 'pl-47.5 max-lg:pl-15',
@@ -31,10 +34,15 @@ export const Cta = () => {
 
       <h2
         id='cta-title'
+        aria-label={TITLE_LABEL}
         className='relative w-fit text-[calc(144*var(--text-unit))] leading-[calc(162*var(--text-unit))] tracking-[calc(-5*var(--text-unit))] uppercase max-lg:text-[calc(46*var(--text-unit))] max-lg:leading-[calc(52*var(--text-unit))] max-lg:tracking-[calc(-1.6*var(--text-unit))]'
       >
         {CTA_LINES.map(line => (
-          <span key={line.id} className={clsx('block', ALIGN_CLASS_NAMES[line.align])}>
+          <span
+            key={line.id}
+            aria-hidden='true'
+            className={clsx('block', ALIGN_CLASS_NAMES[line.align])}
+          >
             {line.words.map((word, index) => (
               <Fragment key={word.id}>
                 {index > 0 && ' '}

@@ -1,6 +1,11 @@
-// In memory: one pm2 process serves the site
-const hitsByKey = new Map<string, number[]>()
-const PRUNE_SIZE = 1000
+interface RateLimitEntry {
+  hits: number[]
+  expiresAt: number
+}
+
+// In memory: one pm2 process serves the site. Never evict active clients to admit new ones.
+const hitsByKey = new Map<string, RateLimitEntry>()
+const MAX_KEYS = 1000
 
 interface RateLimit {
   limit: number
@@ -9,16 +14,19 @@ interface RateLimit {
 
 export const isRateLimited = (key: string, { limit, windowMs }: RateLimit) => {
   const now = Date.now()
-  const recentHits = (hitsByKey.get(key) ?? []).filter(time => now - time < windowMs)
-  const isLimited = recentHits.length >= limit
-  if (!isLimited) recentHits.push(now)
-  hitsByKey.set(key, recentHits)
+  const entry = hitsByKey.get(key)
+  const recentHits = (entry?.hits ?? []).filter(time => now - time < windowMs)
+  if (recentHits.length >= limit) return true
 
-  if (hitsByKey.size > PRUNE_SIZE) {
-    for (const [staleKey, times] of hitsByKey) {
-      if (times.every(time => now - time >= windowMs)) hitsByKey.delete(staleKey)
+  if (!entry && hitsByKey.size >= MAX_KEYS) {
+    for (const [staleKey, staleEntry] of hitsByKey) {
+      if (staleEntry.expiresAt <= now) hitsByKey.delete(staleKey)
     }
+    // Fail closed until a slot expires instead of allowing unbounded memory growth.
+    if (hitsByKey.size >= MAX_KEYS) return true
   }
 
-  return isLimited
+  recentHits.push(now)
+  hitsByKey.set(key, { hits: recentHits, expiresAt: now + windowMs })
+  return false
 }

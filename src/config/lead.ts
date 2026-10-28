@@ -2,7 +2,8 @@ export const LEAD_ENDPOINT = '/api/lead'
 
 export const LEAD_RATE_LIMIT = { limit: 5, windowMs: 10 * 60 * 1000 }
 
-export const LEAD_LIMITS = { answers: 12, values: 10 }
+// Leave room within Telegram's 4096-character limit for labels and metadata.
+export const LEAD_LIMITS = { answers: 12, values: 10, totalTextLength: 3000 }
 
 // The message title by the chat's branch (the step the topic leads to)
 export const LEAD_TITLES: Record<string, string> = {
