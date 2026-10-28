@@ -22,8 +22,8 @@ module.exports = {
         PORT: '3010',
         // Only reachable through nginx (HTTPS)
         HOSTNAME: '127.0.0.1',
-        // The image optimizer (sharp) allocates natively: without these glibc keeps freed memory
-        // in many arenas and RSS creeps up while the JS heap stays flat
+        // Without these glibc keeps memory freed after rendering in many arenas, so RSS creeps up
+        // under load while the JS heap stays flat
         MALLOC_ARENA_MAX: '2',
         MALLOC_TRIM_THRESHOLD_: '131072'
       }

@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation'
 
 import { MenuIcon } from '@/components/icon/MenuIcon'
 import { SITE_CONFIG } from '@/config/site'
+import { useHashScrollOnLoad } from '@/hooks/useHashScrollOnLoad'
 import { useMenu } from '@/hooks/useMenu'
 import { handleSectionLinkClick } from '@/lib/scrollToSection'
 import { useIsHeroTitleVisible } from '@/stores/hero'
@@ -19,6 +20,7 @@ const BAR_CLASS_NAME =
 
 export const Header = () => {
   const menu = useMenu()
+  useHashScrollOnLoad()
   const isHome = usePathname() === '/'
   const isHeroTitleVisible = useIsHeroTitleVisible()
   // On home the big centred word is the logo until it scrolls away
