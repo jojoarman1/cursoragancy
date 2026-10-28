@@ -21,6 +21,7 @@ export interface PrismGl {
   uniforms: Record<PrismUniformName, WebGLUniformLocation | null>
   // Sharp text (glyph mask) and its blurred copy (smear source)
   textures: [WebGLTexture, WebGLTexture]
+  dispose: () => void
 }
 
 // Returns null when WebGL isn't available, so the caller can show the CSS fallback
@@ -37,7 +38,12 @@ export const createPrismGl = (canvas: HTMLCanvasElement): PrismGl | null => {
   gl.uniform1i(uniforms.uText, 0)
   gl.uniform1i(uniforms.uSource, 1)
 
-  return { gl, uniforms, textures }
+  const dispose = () => {
+    for (const texture of textures) gl.deleteTexture(texture)
+    quad.dispose()
+  }
+
+  return { gl, uniforms, textures, dispose }
 }
 
 export const uploadPrismTexture = (

@@ -11,7 +11,7 @@ export const QUAD_VERTEX_SHADER = /* glsl */ `
 `
 
 // Biome takes WebGL's useProgram for a React hook, so it lives behind this one name
-export const switchProgram = (gl: WebGLRenderingContext, program: WebGLProgram) => {
+export const switchProgram = (gl: WebGLRenderingContext, program: WebGLProgram | null) => {
   // biome-ignore lint/correctness/useHookAtTopLevel: WebGL's useProgram, not a React hook
   gl.useProgram(program)
 }
@@ -72,7 +72,8 @@ export const createQuadProgram = <Name extends string>(
   }
   switchProgram(gl, program)
 
-  gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer())
+  const buffer = gl.createBuffer()
+  gl.bindBuffer(gl.ARRAY_BUFFER, buffer)
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW)
   const position = gl.getAttribLocation(program, 'aPosition')
   gl.enableVertexAttribArray(position)
@@ -83,7 +84,18 @@ export const createQuadProgram = <Name extends string>(
     uniformNames.map(name => [name, gl.getUniformLocation(program, name)])
   ) as Record<Name, WebGLUniformLocation | null>
 
-  return { gl, program, uniforms }
+  const dispose = () => {
+    gl.bindBuffer(gl.ARRAY_BUFFER, null)
+    gl.deleteBuffer(buffer)
+    for (const shader of gl.getAttachedShaders(program) ?? []) {
+      gl.detachShader(program, shader)
+      gl.deleteShader(shader)
+    }
+    switchProgram(gl, null)
+    gl.deleteProgram(program)
+  }
+
+  return { gl, program, uniforms, dispose }
 }
 
 // Draws the quad over the whole drawing buffer, or over a render target of the given size

@@ -125,5 +125,10 @@ export const createLensCollage = (
   }
 
   resize()
-  return { resize, render }
+  const dispose = () => {
+    for (const texture of textures) gl.deleteTexture(texture)
+    quad.dispose()
+  }
+
+  return { resize, render, dispose }
 }

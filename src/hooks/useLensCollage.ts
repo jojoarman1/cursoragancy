@@ -56,11 +56,15 @@ export const useLensCollage = ({ art, isActive }: UseLensCollageParams) => {
         resizeObserver.observe(canvas)
         setIsReady(true)
       })
-      .catch(() => setIsSupported(false))
+      .catch(() => {
+        if (!isCancelled) setIsSupported(false)
+      })
 
     return () => {
       isCancelled = true
       resizeObserver?.disconnect()
+      collageRef.current?.dispose()
+      collageRef.current = null
     }
   }, [art.background, art.foreground, art.isSheet])
 

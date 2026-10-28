@@ -132,6 +132,7 @@ export const usePrismRenderer = (params: UsePrismRendererParams) => {
       cancelAnimationFrame(frame)
       // No loseContext() here: the canvas returns the same, now dead, context on the next
       // getContext(), which breaks Strict Mode's second effect run. It is freed with the canvas
+      prismGl.dispose()
       renderRef.current = () => {}
       requestRenderRef.current = () => {}
     }
