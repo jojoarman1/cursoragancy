@@ -15,7 +15,5 @@ export const SITE_CONFIG = {
   url: process.env.NEXT_PUBLIC_SITE_URL || 'https://bydialog.ru',
   lang: 'ru',
   locale: 'ru_RU',
-  themeColor: '#e8e8e3',
-  // The favicon's dark tile and its light letter, for images drawn in the logo's style
-  logoColors: { tile: '#0c0c0c', mark: '#e8e8e3' }
+  themeColor: '#e8e8e3'
 } as const

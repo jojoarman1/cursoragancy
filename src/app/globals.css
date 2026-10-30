@@ -6,6 +6,7 @@
   --foreground: #080807;
   --muted: #6b645c;
   --faq: #202020;
+  --cta: #1a1a1a;
   --accent: #176308;
   --signal: #ff4a1c;
   --silver: #b2b2b2;
@@ -16,6 +17,7 @@
   --color-foreground: var(--foreground);
   --color-muted: var(--muted);
   --color-faq: var(--faq);
+  --color-cta: var(--cta);
   --color-accent: var(--accent);
   --color-signal: var(--signal);
   --color-silver: var(--silver);

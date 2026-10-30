@@ -9,7 +9,6 @@ import { CTA_LINES, CTA_QUOTE, type CtaLine } from '@/config/cta'
 import { useCtaReveal } from '@/hooks/useCtaReveal'
 import { requestChatOpen } from '@/lib/chatEvents'
 
-import { CtaBackground } from './CtaBackground'
 import { CtaWordMask } from './CtaWordMask'
 
 // Keep one accessible heading while SplitText animates its visual characters.
@@ -28,10 +27,8 @@ export const Cta = () => {
     <section
       ref={ctaReveal.refs.sectionRef}
       aria-labelledby='cta-title'
-      className='relative flex min-h-375 flex-col items-center overflow-hidden pt-75 bg-foreground px-7 pb-50 text-background max-lg:min-h-svh max-lg:justify-center max-lg:px-4 max-lg:py-30'
+      className='relative flex min-h-375 flex-col items-center overflow-hidden bg-cta px-7 pt-75 pb-50 text-background max-lg:min-h-svh max-lg:justify-center max-lg:px-4 max-lg:py-30'
     >
-      <CtaBackground areaRef={ctaReveal.refs.sectionRef} />
-
       <h2
         id='cta-title'
         aria-label={TITLE_LABEL}
@@ -47,7 +44,11 @@ export const Cta = () => {
               <Fragment key={word.id}>
                 {index > 0 && ' '}
                 <CtaWordMask effect={word.effect}>
-                  <span data-cta-word data-effect={word.effect} className='inline-block'>
+                  <span
+                    data-cta-word
+                    data-effect={word.effect}
+                    className='inline-block *:inline-block'
+                  >
                     {word.text}
                   </span>
                 </CtaWordMask>

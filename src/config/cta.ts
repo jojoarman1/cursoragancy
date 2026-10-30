@@ -38,8 +38,5 @@ export const CTA_LINES: CtaLine[] = [
   { id: 'people', align: 'end', words: [{ id: 'people', text: 'людей', effect: 'slide' }] }
 ]
 
-// TODO: a stand-in until the section's own photo is in public/
-export const CTA_BACKGROUND = '/projects/viceseason-undercover/cover.webp'
-
 export const CTA_QUOTE =
   '«Мы - команда увлечённых делом. Внимательно относимся к каждому проекту, открыты к диалогу и создаём продукты, за качество которых можем отвечать.»'

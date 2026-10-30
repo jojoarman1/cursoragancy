@@ -23,13 +23,13 @@ export const createCtaWordTween = (word: HTMLElement, effect: CtaWordEffect) => 
     case 'focus':
       return gsap.from(word, { ...base, opacity: 0, scale: 1.15, filter: 'blur(16px)' })
     case 'cascade':
-      return gsap.from(SplitText.create(word, { type: 'chars', aria: 'none' }).chars, {
+      return gsap.from(SplitText.create(word, { type: 'chars', aria: 'none', tag: 'span' }).chars, {
         ...base,
         yPercent: 110,
         stagger: CHAR_STAGGER
       })
     case 'flip':
-      return gsap.from(SplitText.create(word, { type: 'chars', aria: 'none' }).chars, {
+      return gsap.from(SplitText.create(word, { type: 'chars', aria: 'none', tag: 'span' }).chars, {
         ...base,
         rotationX: -90,
         opacity: 0,

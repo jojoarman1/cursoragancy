@@ -67,7 +67,7 @@ export const useTestimonialReveal = () => {
       }
 
       // Words keep their letters together, so lines wrap as in the plain text
-      const split = SplitText.create(quoteRef.current, { type: 'words,chars' })
+      const split = SplitText.create(quoteRef.current, { type: 'words,chars', tag: 'span' })
       gsap
         .timeline({
           defaults: { ease: 'none' },

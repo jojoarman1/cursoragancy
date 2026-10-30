@@ -34,7 +34,7 @@ export const Chat = () => {
         aria-expanded={chat.state.isOpen}
         onClick={chat.functions.open}
         variant='difference'
-        className='fixed bottom-[calc(24*var(--text-unit))] left-[calc(24*var(--text-unit))] z-40'
+        className='fixed bottom-[calc(24*var(--text-unit)+var(--chat-footer-offset,0px))] left-[calc(24*var(--text-unit))] z-40'
       />
 
       {/* The shadow sits outside the element that gets clipped, or the clip would cut it off. The
@@ -44,7 +44,7 @@ export const Chat = () => {
         ref={chat.refs.panelRef}
         id={PANEL_ID}
         aria-label='Чат'
-        className='invisible fixed top-[calc(106*var(--text-unit)+var(--chat-viewport-top,0px))] bottom-[calc(24*var(--text-unit)+var(--chat-viewport-bottom,0px))] left-[calc(24*var(--text-unit))] z-50 w-[min(400px,calc(100vw-48*var(--text-unit)))] rounded-[calc(2.4*var(--text-unit))] drop-shadow-[0_0_calc(40*var(--text-unit))_rgb(0_0_0/0.4)] max-lg:drop-shadow-none max-lg:right-[calc(24*var(--text-unit))] max-lg:w-auto'
+        className='invisible fixed top-[min(calc(106*var(--text-unit)+var(--chat-viewport-top,0px)),calc(100svh-324*var(--text-unit)-var(--chat-viewport-bottom,0px)-var(--chat-footer-offset,0px)))] bottom-[calc(24*var(--text-unit)+var(--chat-viewport-bottom,0px)+var(--chat-footer-offset,0px))] left-[calc(24*var(--text-unit))] z-50 w-[min(400px,calc(100vw-48*var(--text-unit)))] rounded-[calc(2.4*var(--text-unit))] drop-shadow-[0_0_calc(40*var(--text-unit))_rgb(0_0_0/0.4)] max-lg:drop-shadow-none max-lg:right-[calc(24*var(--text-unit))] max-lg:w-auto'
       >
         <div
           ref={chat.refs.clipRef}

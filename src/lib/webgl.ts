@@ -108,14 +108,3 @@ export const drawQuad = (
   gl.clear(gl.COLOR_BUFFER_BIT)
   gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)
 }
-
-// An 8-bit texture to draw into, e.g. one half of a ping-pong pair
-export const createRenderTarget = (gl: WebGLRenderingContext, width: number, height: number) => {
-  const texture = createTexture(gl)
-  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null)
-  const framebuffer = gl.createFramebuffer()
-  gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer)
-  gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0)
-  gl.bindFramebuffer(gl.FRAMEBUFFER, null)
-  return { texture, framebuffer }
-}

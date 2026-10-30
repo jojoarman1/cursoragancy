@@ -18,7 +18,7 @@ import {
   PANEL_EXPAND_EASE
 } from '@/config/animation'
 import { useChatAutoOpen } from '@/hooks/useChatAutoOpen'
-import { useChatButtonFooterHide } from '@/hooks/useChatButtonFooterHide'
+import { useChatFooterOffset } from '@/hooks/useChatFooterOffset'
 import { useVisualViewportOffset } from '@/hooks/useVisualViewportOffset'
 import { CHAT_OPEN_EVENT } from '@/lib/chatEvents'
 import { reachGoal } from '@/lib/metrika'
@@ -57,7 +57,7 @@ export const useChat = ({ onContentShow, onClosed }: UseChatParams) => {
   const hasOpenedRef = useRef(false)
 
   useVisualViewportOffset({ targetRef: panelRef, isEnabled: panelDisclosure.opened })
-  const footerHide = useChatButtonFooterHide({ buttonRef, isOpen: panelDisclosure.opened })
+  useChatFooterOffset({ rootRef })
 
   const { context, contextSafe } = useGSAP({ scope: rootRef })
 
@@ -169,7 +169,7 @@ export const useChat = ({ onContentShow, onClosed }: UseChatParams) => {
           '<'
         )
         .set(panel, { autoAlpha: 0 })
-        .set(button, { autoAlpha: footerHide.state.latestIsFooterInView.ref.current ? 0 : 1 })
+        .set(button, { autoAlpha: 1 })
         .fromTo(
           button.querySelector(LABEL_SELECTOR),
           { yPercent: 110 },
