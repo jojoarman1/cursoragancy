@@ -16,7 +16,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  APP_DIR: /home/vice/Frontend/dialog
+  APP_DIR: /home/vice/frontend/dialog
   PM2_NAME: dialog
   # Same as PORT in ecosystem.config.cjs
   APP_PORT: 3010
